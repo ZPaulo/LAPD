@@ -1,0 +1,2 @@
+C:\Users\Ze_Pa\Desktop\New folder\Smallet\Smallet\Smallet.WinPhone\Smallet.WinPhone.csproj;neutral
+C:\Users\Ze_Pa\Desktop\New folder\Smallet\Smallet\Smallet\Smallet.csproj;neutral
