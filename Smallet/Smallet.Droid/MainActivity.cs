@@ -5,27 +5,41 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using System.Collections.Generic;
 
 namespace Smallet.Droid
 {
-    [Activity(Label = "Smallet.Droid", MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(Label = "Smallet", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : Activity
     {
-        int count = 1;
+		private List<Place> mPlaces;
+		private ListView mListView;
 
         protected override void OnCreate(Bundle bundle)
-        {
-            base.OnCreate(bundle);
+		{
+			base.OnCreate (bundle);
 
-            // Set our view from the "main" layout resource
-            SetContentView(Resource.Layout.Main);
+			// Set our view from the "main" layout resource
+			ActionBar.SetDisplayShowHomeEnabled (false);
+			ActionBar.SetDisplayShowTitleEnabled (false);
+			ActionBar.SetCustomView (Resource.Layout.ActionBar);
+			ActionBar.SetDisplayShowCustomEnabled (true);
 
-            // Get our button from the layout resource,
-            // and attach an event to it
-            Button button = FindViewById<Button>(Resource.Id.MyButton);
+			SetContentView (Resource.Layout.Main);
 
-            button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); };
-        }
+			mListView = FindViewById<ListView> (Resource.Id.myListView);
+
+			mPlaces = new List<Place> ();
+			mPlaces.Add (new Place(){Time="5 PM", Money ="- 50€", Address= "Rua das Nogueiras"});
+			mPlaces.Add (new Place(){Time="5 PM", Money ="- 50€", Address= "Rua das Nogueiras"});
+			mPlaces.Add (new Place(){Time="5 PM", Money ="- 50€", Address= "Rua das Nogueiras"});
+
+			ListViewAdapter adapter = new ListViewAdapter (this, mPlaces);
+			mListView.Adapter = adapter;
+
+		}
+
+
     }
 }
 
