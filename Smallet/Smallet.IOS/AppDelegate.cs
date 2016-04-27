@@ -1,4 +1,6 @@
-﻿using Foundation;
+﻿using CoreLocation;
+using Foundation;
+using MapKit;
 using UIKit;
 
 namespace Smallet.IOS
@@ -16,6 +18,8 @@ namespace Smallet.IOS
             set;
         }
 
+        MKMapView mapView;
+
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
             // create a new window instance based on the screen size
@@ -26,6 +30,10 @@ namespace Smallet.IOS
 
             // make the window visible
             Window.MakeKeyAndVisible();
+
+            mapView = new MKMapView(View.Bounds);
+            mapView.AutoresizingMask = UIViewAutoresizing.FlexibleDimensions;
+            View.AddSubview(mapView);
 
             return true;
         }

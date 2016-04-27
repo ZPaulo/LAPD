@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:paddingTop="25dp"
+    android:paddingLeft="25dp"
+    android:paddingBottom="25dp"
+    android:weightSum="100"
+    android:background="#ffeeefe4">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/linearLayout1">
+        <TextView
+            android:text="Time"
+            android:id="@+id/txtTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="#ff000000" />
+        <TextView
+            android:text="MoneySpent"
+            android:id="@+id/txtMoneySpent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ffcc3232" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/linearLayout2">
+        <TextView
+            android:text="Address"
+            android:id="@+id/txtAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ff000000"
+            android:paddingLeft="25dp" />
+    </LinearLayout>
+</LinearLayout>

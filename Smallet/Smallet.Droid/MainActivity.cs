@@ -14,17 +14,9 @@ using System.Text;
 
 namespace Smallet.Droid
 {
-    [Activity(Label = "Smallet.Droid", MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(Label = "Smallet", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : Activity, ILocationListener
     {
-        static readonly string TAG = "X:" + typeof(MainActivity).Name;
-        TextView addressText;
-        Location currentLocation;
-        LocationManager locationManager;
-
-        string locationProvider;
-        TextView locationText;
-
         public async void OnLocationChanged(Location location)
         {
             currentLocation = location;
@@ -55,19 +47,41 @@ namespace Smallet.Droid
             throw new NotImplementedException();
         }
 
+        static readonly string TAG = "X:" + typeof(MainActivity).Name;
+        TextView addressText;
+        Location currentLocation;
+        LocationManager locationManager;
+
+        string locationProvider;
+        TextView locationText;
+        private List<Place> mPlaces;
+        private ListView mListView;
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
 
             // Set our view from the "main" layout resource
+            ActionBar.SetDisplayShowHomeEnabled(false);
+            ActionBar.SetDisplayShowTitleEnabled(false);
+            ActionBar.SetCustomView(Resource.Layout.ActionBar);
+            ActionBar.SetDisplayShowCustomEnabled(true);
+
             SetContentView(Resource.Layout.Main);
 
-            addressText = FindViewById<TextView>(Resource.Id.address_text);
-            locationText = FindViewById<TextView>(Resource.Id.location_text);
-            FindViewById<TextView>(Resource.Id.get_address_button).Click += AddressButton_OnClick;
+            mListView = FindViewById<ListView>(Resource.Id.myListView);
+
+            mPlaces = new List<Place>();
+            mPlaces.Add(new Place() { Time = "5 PM", Money = "- 50€", Address = "Rua das Nogueiras" });
+            mPlaces.Add(new Place() { Time = "5 PM", Money = "- 50€", Address = "Rua das Nogueiras" });
+            mPlaces.Add(new Place() { Time = "5 PM", Money = "- 50€", Address = "Rua das Nogueiras" });
+
+            ListViewAdapter adapter = new ListViewAdapter(this, mPlaces);
+            mListView.Adapter = adapter;
 
             InitializeLocationManager();
         }
+
 
         private void InitializeLocationManager()
         {
@@ -99,7 +113,7 @@ namespace Smallet.Droid
         {
             if (currentLocation == null)
             {
-               addressText.Text = "Can't determine the current address. Try again in a few minutes.";
+                addressText.Text = "Can't determine the current address. Try again in a few minutes.";
                 return;
             }
 
