@@ -14,8 +14,7 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Json;
-
-
+using Newtonsoft.Json;
 
 namespace Smallet.Droid
 {
@@ -62,6 +61,8 @@ namespace Smallet.Droid
         private List<Place> mPlaces;
         private ListView mListView;
 
+      
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -77,9 +78,7 @@ namespace Smallet.Droid
             mListView = FindViewById<ListView>(Resource.Id.myListView);
 
             mPlaces = new List<Place>();
-            mPlaces.Add(new Place() { Time = "5 PM", Money = "- 50€", Address = "Rua das Nogueiras" });
-            mPlaces.Add(new Place() { Time = "5 PM", Money = "- 50€", Address = "Rua das Nogueiras" });
-            mPlaces.Add(new Place() { Time = "5 PM", Money = "- 50€", Address = "Rua das Nogueiras" });
+            mPlaces.Add(new Place() { Time = "Unavailable", Money = "Unavailable", Address = "Unavailable" });
 
             ListViewAdapter adapter = new ListViewAdapter(this, mPlaces);
             mListView.Adapter = adapter;
@@ -97,13 +96,33 @@ namespace Smallet.Droid
                 // Fetch the weather information asynchronously, 
                 // parse the results, then update the screen:
                 JsonValue json = await FetchWeatherAsync(url);
-                // ParseAndDisplay (json);
-                Console.WriteLine(json.ToString());
+                ParseAndDisplay(json);
 
 
             };
         }
 
+        private void ParseAndDisplay(JsonValue json)
+        {
+            // Extract the array of name/value results for the field name "weatherObservation". 
+            JsonValue location = json["location"];
+            mPlaces = new List<Place>();
+
+            foreach (JsonValue item in location)
+            {
+                mPlaces.Add(new Place() { Time = item["time_spent"].ToString(), Money = "-"+item["money_spent"].ToString() + "€", Address = item["address"].ToString() });
+            }
+
+            ListViewAdapter adapter = new ListViewAdapter(this, mPlaces);
+            mListView.Adapter = adapter;
+        }
+
+        internal class SMLocation
+        {
+           public double money_spent { get; set; }
+           public double time_spent { get; set; }
+           public string address { get; set; }
+        }
 
         private void InitializeLocationManager()
         {
