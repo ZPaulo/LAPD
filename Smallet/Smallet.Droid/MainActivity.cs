@@ -11,6 +11,11 @@ using Android.Util;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text;
+using System.Net;
+using System.IO;
+using System.Json;
+
+
 
 namespace Smallet.Droid
 {
@@ -80,6 +85,23 @@ namespace Smallet.Droid
             mListView.Adapter = adapter;
 
             InitializeLocationManager();
+
+            Button button = FindViewById<Button>(Resource.Id.button1);
+
+            // When the user clicks the button ...
+            button.Click += async (sender, e) => {
+
+                // Get the latitude and longitude entered by the user and create a query.
+                string url = "http://10.0.2.2:3000/api/locations";
+
+                // Fetch the weather information asynchronously, 
+                // parse the results, then update the screen:
+                JsonValue json = await FetchWeatherAsync(url);
+                // ParseAndDisplay (json);
+                Console.WriteLine(json.ToString());
+
+
+            };
         }
 
 
@@ -146,6 +168,29 @@ namespace Smallet.Droid
             else
             {
                 addressText.Text = "Unable to determine the address. Try again in a few minutes.";
+            }
+        }
+
+        private async Task<JsonValue> FetchWeatherAsync(string url)
+        {
+            // Create an HTTP web request using the URL:
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
+            request.ContentType = "application/json";
+            request.Method = "GET";
+
+            // Send the request to the server and wait for the response:
+            using (WebResponse response = await request.GetResponseAsync())
+            {
+                // Get a stream representation of the HTTP web response:
+                using (Stream stream = response.GetResponseStream())
+                {
+                    // Use this stream to build a JSON document object:
+                    JsonValue jsonDoc = await Task.Run(() => JsonObject.Load(stream));
+                    Console.Out.WriteLine("Response: {0}", jsonDoc.ToString());
+
+                    // Return the JSON document:
+                    return jsonDoc;
+                }
             }
         }
 
