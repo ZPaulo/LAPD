@@ -107,10 +107,15 @@ namespace Smallet.Droid
             // Extract the array of name/value results for the field name "weatherObservation". 
             JsonValue location = json["location"];
             mPlaces = new List<Place>();
+            TimeSpan span;
+            string timeSpent;
 
             foreach (JsonValue item in location)
             {
-                mPlaces.Add(new Place() { Time = item["time_spent"].ToString(), Money = "-"+item["money_spent"].ToString() + "€", Address = item["address"].ToString() });
+                span = TimeSpan.FromMinutes(item["time_spent"]);
+                timeSpent = span.ToString(@"hh\:mm\:ss");
+
+                mPlaces.Add(new Place() { Time = timeSpent, Money = "-"+item["money_spent"].ToString() + "€", Address = item["address"].ToString() });
             }
 
             ListViewAdapter adapter = new ListViewAdapter(this, mPlaces);
