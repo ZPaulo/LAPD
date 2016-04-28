@@ -60,6 +60,9 @@ namespace Smallet.Droid
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f050007
+			public const int button1 = 2131034119;
+			
 			// aapt resource value: 0x7f050001
 			public const int imageView1 = 2131034113;
 			
@@ -72,8 +75,8 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f050003
 			public const int linearLayout3 = 2131034115;
 			
-			// aapt resource value: 0x7f050007
-			public const int myListView = 2131034119;
+			// aapt resource value: 0x7f050008
+			public const int myListView = 2131034120;
 			
 			// aapt resource value: 0x7f050006
 			public const int txtAddress = 2131034118;
