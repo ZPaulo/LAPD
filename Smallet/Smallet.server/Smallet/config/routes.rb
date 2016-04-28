@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
-  get 'welcome/index'
-  root 'welcome#index'
-    
-  devise_for :users, class_name: 'FormUser', :controllers => { omniauth_callbacks: 'omniauth_callbacks', registrations: 'registrations'}
+  
+    get 'auth/:provider/callback', to: 'sessions#create'
+    get 'auth/failure', to: redirect('/')
+    get 'signout', to: 'sessions#destroy', as: 'signout'
+
+    resources :sessions, only: [:create, :destroy]
+    resource :home, only: [:show]
+
+    root to: "home#show"
 end
+
