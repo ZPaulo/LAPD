@@ -15,13 +15,26 @@ using System.Net;
 using System.IO;
 using System.Json;
 using Newtonsoft.Json;
+using Android.Gms.Common.Apis;
+using Android.Gms.Common;
+using Android.Gms.Location;
 
 namespace Smallet.Droid
 {
     [Activity(Label = "Smallet", MainLauncher = true, Icon = "@drawable/icon")]
-    public class MainActivity : Activity, ILocationListener
+    public class MainActivity : Activity, GoogleApiClient.IConnectionCallbacks, GoogleApiClient.IOnConnectionFailedListener, Android.Gms.Location.ILocationListener
     {
-        public async void OnLocationChanged(Location location)
+        bool isGooglePlayServicesInstalled;
+        GoogleApiClient apiClient;
+        LocationRequest locRequest;
+        static readonly string TAG = "X:" + typeof(MainActivity).Name;
+        TextView addressText;
+        Location currentLocation;
+        TextView locationText;
+        private List<Place> mPlaces;
+        private ListView mListView;
+
+        public void OnLocationChanged(Location location)
         {
             currentLocation = location;
             if (currentLocation == null)
@@ -31,8 +44,6 @@ namespace Smallet.Droid
             else
             {
                 locationText.Text = string.Format("{0:f6},{1:f6}", currentLocation.Latitude, currentLocation.Longitude);
-                Address address = await ReverseGeocodeCurrentLocation();
-                DisplayAddress(address);
             }
         }
 
@@ -51,21 +62,26 @@ namespace Smallet.Droid
             throw new NotImplementedException();
         }
 
-        static readonly string TAG = "X:" + typeof(MainActivity).Name;
-        TextView addressText;
-        Location currentLocation;
-        LocationManager locationManager;
-
-        string locationProvider;
-        TextView locationText;
-        private List<Place> mPlaces;
-        private ListView mListView;
-
-      
-
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
+
+            isGooglePlayServicesInstalled = IsGooglePlayServicesInstalled();
+            if (isGooglePlayServicesInstalled)
+            {
+                // pass in the Context, ConnectionListener and ConnectionFailedListener
+                apiClient = new GoogleApiClient.Builder(this, this, this).AddApi(LocationServices.API).Build();
+
+                // generate a location request that we will pass into a call for location updates
+                locRequest = new LocationRequest();
+
+            }
+            else
+            {
+                Log.Error("OnCreate", "Google Play Services is not installed");
+                Toast.MakeText(this, "Google Play Services is not installed", ToastLength.Long).Show();
+                Finish();
+            }
 
             // Set our view from the "main" layout resource
             ActionBar.SetDisplayShowHomeEnabled(false);
@@ -76,19 +92,19 @@ namespace Smallet.Droid
             SetContentView(Resource.Layout.Main);
 
             mListView = FindViewById<ListView>(Resource.Id.myListView);
-
+            locationText = FindViewById<TextView>(Resource.Id.locationText);
+            addressText = FindViewById<TextView>(Resource.Id.txtAddress);
             mPlaces = new List<Place>();
             mPlaces.Add(new Place() { Time = "Unavailable", Money = "Unavailable", Address = "Unavailable" });
 
             ListViewAdapter adapter = new ListViewAdapter(this, mPlaces);
             mListView.Adapter = adapter;
 
-            InitializeLocationManager();
-
             Button button = FindViewById<Button>(Resource.Id.button1);
 
             // When the user clicks the button ...
-            button.Click += async (sender, e) => {
+            button.Click += async (sender, e) =>
+            {
 
                 // Get the latitude and longitude entered by the user and create a query.
                 string url = "http://10.0.2.2:3000/api/locations";
@@ -100,6 +116,25 @@ namespace Smallet.Droid
 
 
             };
+        }
+
+        bool IsGooglePlayServicesInstalled()
+        {
+            int queryResult = GoogleApiAvailability.Instance.IsGooglePlayServicesAvailable(this);
+            if (queryResult == ConnectionResult.Success)
+            {
+                Log.Info("MainActivity", "Google Play Services is installed on this device.");
+                return true;
+            }
+
+            if (GoogleApiAvailability.Instance.IsUserResolvableError(queryResult))
+            {
+                string errorString = GoogleApiAvailability.Instance.GetErrorString(queryResult);
+                Log.Error("ManActivity", "There is a problem with Google Play Services on this device: {0} - {1}", queryResult, errorString);
+
+                // Show error dialog to let user debug google play services
+            }
+            return false;
         }
 
         private void ParseAndDisplay(JsonValue json)
@@ -115,44 +150,23 @@ namespace Smallet.Droid
                 span = TimeSpan.FromMinutes(item["time_spent"]);
                 timeSpent = span.ToString(@"hh\:mm\:ss");
 
-                mPlaces.Add(new Place() { Time = timeSpent, Money = "-"+item["money_spent"].ToString() + "€", Address = item["address"].ToString() });
+                mPlaces.Add(new Place() { Time = timeSpent, Money = "-" + item["money_spent"].ToString() + "€", Address = item["address"].ToString() });
             }
 
             ListViewAdapter adapter = new ListViewAdapter(this, mPlaces);
             mListView.Adapter = adapter;
         }
 
-        internal class SMLocation
-        {
-           public double money_spent { get; set; }
-           public double time_spent { get; set; }
-           public string address { get; set; }
-        }
-
-        private void InitializeLocationManager()
-        {
-            locationManager = (LocationManager)GetSystemService(LocationService);
-            Criteria criteriaForLocationService = new Criteria
-            {
-                Accuracy = Accuracy.Fine
-            };
-            IList<string> acceptableLocationProviders = locationManager.GetProviders(criteriaForLocationService, true);
-
-            if (acceptableLocationProviders.Any())
-            {
-                locationProvider = acceptableLocationProviders.First();
-            }
-            else
-            {
-                locationProvider = string.Empty;
-            }
-            Log.Debug(TAG, "Using " + locationProvider + ".");
-        }
-
         protected override void OnResume()
         {
             base.OnResume();
-            locationManager.RequestLocationUpdates(locationProvider, 2000, 1, this);
+            apiClient.Connect();
+
+            locRequest.SetPriority(100);
+
+            locRequest.SetFastestInterval(500);
+            locRequest.SetInterval(1000);
+
         }
 
         async void AddressButton_OnClick(object sender, EventArgs eventArgs)
@@ -218,8 +232,21 @@ namespace Smallet.Droid
             }
         }
 
+        public async void OnConnected(Bundle connectionHint)
+        {
+            await LocationServices.FusedLocationApi.RequestLocationUpdates(apiClient, locRequest, this);
+            Log.Info("LocationClient", "Now connected to client");
+        }
 
+        public void OnConnectionSuspended(int cause)
+        {
+            Log.Info("LocationClient", "Now disconnected from client " + cause);
+        }
 
+        public void OnConnectionFailed(ConnectionResult result)
+        {
+            Log.Info("LocationClient", "Connection failed, attempting to reach google play services");
+        }
     }
 }
 
