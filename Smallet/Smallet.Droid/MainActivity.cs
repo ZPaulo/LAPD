@@ -16,8 +16,11 @@ using System.IO;
 using System.Json;
 using Newtonsoft.Json;
 using Android.Gms.Common.Apis;
+using Android.Content.PM;
 using Android.Gms.Common;
 using Android.Gms.Location;
+using Android.Support.V4.Content;
+using Java.Util;
 
 namespace Smallet.Droid
 {
@@ -28,23 +31,43 @@ namespace Smallet.Droid
         GoogleApiClient apiClient;
         LocationRequest locRequest;
         static readonly string TAG = "X:" + typeof(MainActivity).Name;
-        TextView addressText;
-        Location currentLocation;
-        TextView locationText;
+        Location currentLocation, oldLocation;
+        bool isCalculating;
+        public static bool isStill;
         private List<Place> mPlaces;
         private ListView mListView;
+        PendingIntent mActivityDetectionPendingIntent;
+        Button mRequestActivityUpdatesButton;
+        Button mRemoveActivityUpdatesButton;
+        private Handler handler;
 
         public void OnLocationChanged(Location location)
         {
             currentLocation = location;
-            if (currentLocation == null)
+            if (oldLocation == null)
+                oldLocation = currentLocation;
+            
+
+            if (!isCalculating)
             {
-                locationText.Text = "Unable to determine your location. Try again in a short while.";
+                isCalculating = true;
+                handler.PostDelayed(runnableTimed, 3000);
+            }
+        }
+
+        private void runnableTimed()
+        {
+            double distance = Utilities.GetDistance(oldLocation.Latitude, oldLocation.Longitude, currentLocation.Latitude, currentLocation.Longitude);
+            if (distance < 15 || isStill)
+            {
+                Toast.MakeText(this, "Dentro desta dist " + distance, ToastLength.Long).Show();
             }
             else
             {
-                locationText.Text = string.Format("{0:f6},{1:f6}", currentLocation.Latitude, currentLocation.Longitude);
+                oldLocation = currentLocation;
+                Toast.MakeText(this, "Fora desta dist " + distance, ToastLength.Long).Show();
             }
+            isCalculating = false;
         }
 
         public void OnProviderDisabled(string provider)
@@ -65,12 +88,30 @@ namespace Smallet.Droid
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
+            handler = new Handler();
+            isCalculating = false;
+            isStill = false;
+            SetContentView(Resource.Layout.main_activity);
+
+            mRequestActivityUpdatesButton = FindViewById<Button>(Resource.Id.request_activity_updates_button);
+            mRemoveActivityUpdatesButton = FindViewById<Button>(Resource.Id.remove_activity_updates_button);
+
+            mRequestActivityUpdatesButton.Click += RequestActivityUpdatesButtonHandler;
+            mRemoveActivityUpdatesButton.Click += RemoveActivityUpdatesButtonHandler;
+
+
+            SetButtonsEnabledState();
 
             isGooglePlayServicesInstalled = IsGooglePlayServicesInstalled();
             if (isGooglePlayServicesInstalled)
             {
                 // pass in the Context, ConnectionListener and ConnectionFailedListener
-                apiClient = new GoogleApiClient.Builder(this, this, this).AddApi(LocationServices.API).Build();
+                apiClient = new GoogleApiClient.Builder(this, this, this)
+                    .AddConnectionCallbacks(this)
+                    .AddOnConnectionFailedListener(this)
+                    .AddApi(LocationServices.API)
+                    .AddApi(ActivityRecognition.API)
+                    .Build();
 
                 // generate a location request that we will pass into a call for location updates
                 locRequest = new LocationRequest();
@@ -89,33 +130,33 @@ namespace Smallet.Droid
             ActionBar.SetCustomView(Resource.Layout.ActionBar);
             ActionBar.SetDisplayShowCustomEnabled(true);
 
-            SetContentView(Resource.Layout.Main);
+            //SetContentView(Resource.Layout.Main);
 
-            mListView = FindViewById<ListView>(Resource.Id.myListView);
-            locationText = FindViewById<TextView>(Resource.Id.locationText);
-            addressText = FindViewById<TextView>(Resource.Id.txtAddress);
-            mPlaces = new List<Place>();
-            mPlaces.Add(new Place() { Time = "Unavailable", Money = "Unavailable", Address = "Unavailable" });
+            //mListView = FindViewById<ListView>(Resource.Id.myListView);
+            //locationText = FindViewById<TextView>(Resource.Id.locationText);
+            //addressText = FindViewById<TextView>(Resource.Id.txtAddress);
+            //mPlaces = new List<Place>();
+            //mPlaces.Add(new Place() { Time = "Unavailable", Money = "Unavailable", Address = "Unavailable" });
 
-            ListViewAdapter adapter = new ListViewAdapter(this, mPlaces);
-            mListView.Adapter = adapter;
+            //ListViewAdapter adapter = new ListViewAdapter(this, mPlaces);
+            //mListView.Adapter = adapter;
 
-            Button button = FindViewById<Button>(Resource.Id.button1);
+            //Button button = FindViewById<Button>(Resource.Id.button1);
 
-            // When the user clicks the button ...
-            button.Click += async (sender, e) =>
-            {
+            //// When the user clicks the button ...
+            //button.Click += async (sender, e) =>
+            //{
 
-                // Get the latitude and longitude entered by the user and create a query.
-                string url = "http://10.0.2.2:3000/api/locations";
+            //    // Get the latitude and longitude entered by the user and create a query.
+            //    string url = "http://10.0.2.2:3000/api/locations";
 
-                // Fetch the weather information asynchronously, 
-                // parse the results, then update the screen:
-                JsonValue json = await FetchWeatherAsync(url);
-                ParseAndDisplay(json);
+            //    // Fetch the weather information asynchronously, 
+            //    // parse the results, then update the screen:
+            //    JsonValue json = await FetchWeatherAsync(url);
+            //    ParseAndDisplay(json);
 
 
-            };
+            //};
         }
 
         bool IsGooglePlayServicesInstalled()
@@ -164,49 +205,9 @@ namespace Smallet.Droid
 
             locRequest.SetPriority(100);
 
-            locRequest.SetFastestInterval(500);
-            locRequest.SetInterval(1000);
+            locRequest.SetFastestInterval(1000);
+            locRequest.SetInterval(2000);
 
-        }
-
-        async void AddressButton_OnClick(object sender, EventArgs eventArgs)
-        {
-            if (currentLocation == null)
-            {
-                addressText.Text = "Can't determine the current address. Try again in a few minutes.";
-                return;
-            }
-
-            Address address = await ReverseGeocodeCurrentLocation();
-            DisplayAddress(address);
-        }
-
-        async Task<Address> ReverseGeocodeCurrentLocation()
-        {
-            Geocoder geocoder = new Geocoder(this);
-            IList<Address> addressList =
-                await geocoder.GetFromLocationAsync(currentLocation.Latitude, currentLocation.Longitude, 10);
-
-            Address address = addressList.FirstOrDefault();
-            return address;
-        }
-
-        void DisplayAddress(Address address)
-        {
-            if (address != null)
-            {
-                StringBuilder deviceAddress = new StringBuilder();
-                for (int i = 0; i < address.MaxAddressLineIndex; i++)
-                {
-                    deviceAddress.AppendLine(address.GetAddressLine(i));
-                }
-                // Remove the last comma from the end of the address.
-                addressText.Text = deviceAddress.ToString();
-            }
-            else
-            {
-                addressText.Text = "Unable to determine the address. Try again in a few minutes.";
-            }
         }
 
         private async Task<JsonValue> FetchWeatherAsync(string url)
@@ -235,7 +236,11 @@ namespace Smallet.Droid
         public async void OnConnected(Bundle connectionHint)
         {
             await LocationServices.FusedLocationApi.RequestLocationUpdates(apiClient, locRequest, this);
-            Log.Info("LocationClient", "Now connected to client");
+            await Android.Gms.Location.ActivityRecognition.ActivityRecognitionApi.RequestActivityUpdates(
+                    apiClient,
+                    10000,
+                    ActivityDetectionPendingIntent
+                );
         }
 
         public void OnConnectionSuspended(int cause)
@@ -247,6 +252,101 @@ namespace Smallet.Droid
         {
             Log.Info("LocationClient", "Connection failed, attempting to reach google play services");
         }
+
+        public async void RequestActivityUpdatesButtonHandler(object sender, EventArgs e)
+        {
+            if (!apiClient.IsConnected)
+            {
+                Toast.MakeText(this, GetString(Resource.String.not_connected),
+                    ToastLength.Short).Show();
+                return;
+            }
+            await Android.Gms.Location.ActivityRecognition.ActivityRecognitionApi.RequestActivityUpdates(
+                    apiClient,
+                    3000,
+                    ActivityDetectionPendingIntent
+                );
+            HandleResult();
+        }
+
+        public async void RemoveActivityUpdatesButtonHandler(object sender, EventArgs e)
+        {
+            if (!apiClient.IsConnected)
+            {
+                Toast.MakeText(this, GetString(Resource.String.not_connected), ToastLength.Short).Show();
+                return;
+            }
+            await Android.Gms.Location.ActivityRecognition.ActivityRecognitionApi.RemoveActivityUpdates(
+                    apiClient,
+                    ActivityDetectionPendingIntent
+                );
+            HandleResult();
+        }
+
+        PendingIntent ActivityDetectionPendingIntent
+        {
+            get
+            {
+                if (mActivityDetectionPendingIntent != null)
+                {
+                    return mActivityDetectionPendingIntent;
+                }
+                var intent = new Intent(this, typeof(DetectedActivitiesIntentService));
+
+                return PendingIntent.GetService(this, 0, intent, PendingIntentFlags.UpdateCurrent);
+            }
+        }
+
+
+        public void HandleResult()
+        {
+            bool requestingUpdates = !UpdatesRequestedState;
+            UpdatesRequestedState = requestingUpdates;
+
+            SetButtonsEnabledState();
+
+            Toast.MakeText(
+                this,
+                GetString(requestingUpdates ? Resource.String.activity_updates_added : Resource.String.activity_updates_removed),
+                ToastLength.Short
+            ).Show();
+
+        }
+
+        void SetButtonsEnabledState()
+        {
+            if (UpdatesRequestedState)
+            {
+                mRequestActivityUpdatesButton.Enabled = false;
+                mRemoveActivityUpdatesButton.Enabled = true;
+            }
+            else
+            {
+                mRequestActivityUpdatesButton.Enabled = true;
+                mRemoveActivityUpdatesButton.Enabled = false;
+            }
+        }
+
+        ISharedPreferences SharedPreferencesInstance
+        {
+            get
+            {
+                return GetSharedPreferences(Constants.SharedPreferencesName, FileCreationMode.Private);
+            }
+        }
+
+        bool UpdatesRequestedState
+        {
+            get
+            {
+                return SharedPreferencesInstance.GetBoolean(Constants.ActivityUpdatesRequestedKey, false);
+            }
+            set
+            {
+                SharedPreferencesInstance.Edit().PutBoolean(Constants.ActivityUpdatesRequestedKey, value).Commit();
+            }
+        }
+
     }
 }
 
