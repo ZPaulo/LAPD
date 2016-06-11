@@ -34,6 +34,7 @@
         android:id="@+id/linearLayoutMoney">
         <TextView
             android:text="MoneySpent"
+            android:inputType="numberDecimal"
             android:id="@+id/txtMoneySpent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

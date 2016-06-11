@@ -36,17 +36,19 @@ namespace Smallet.Droid
         View popup;
         public static bool isStill;
         public static List<Place> mPlaces;
-        private ListView mListView;
         PendingIntent mActivityDetectionPendingIntent;
+        ValidatePlace valPlaceFragment;
         AlertDialog alert;
         private Handler handler;
+        ListViewAdapter adapter;
+        View clickedPlace;
 
         public void OnLocationChanged(Location location)
         {
             currentLocation = location;
             if (oldLocation == null)
                 oldLocation = currentLocation;
-            
+
 
             if (!isCalculating)
             {
@@ -67,7 +69,6 @@ namespace Smallet.Droid
             else
             {
                 oldLocation = currentLocation;
-                Toast.MakeText(this, "Fora desta dist " + distance, ToastLength.Long).Show();
             }
             //isCalculating = false;
         }
@@ -90,10 +91,11 @@ namespace Smallet.Droid
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
+            ActionBar.NavigationMode = ActionBarNavigationMode.Tabs;
             handler = new Handler();
             isCalculating = false;
             isStill = false;
-            
+
 
             isGooglePlayServicesInstalled = IsGooglePlayServicesInstalled();
             if (isGooglePlayServicesInstalled)
@@ -122,15 +124,39 @@ namespace Smallet.Droid
             ActionBar.SetDisplayShowTitleEnabled(false);
             ActionBar.SetCustomView(Resource.Layout.ActionBar);
             ActionBar.SetDisplayShowCustomEnabled(true);
+            
+
+
+            mPlaces = new List<Place>();
+            mPlaces.Add(new Place() { Time = "?", Name = "No Places yet", Address = "?", Money = "?" });
+
+            valPlaceFragment = new ValidatePlace(mPlaces);
+            AddTabToActionBar("Validate Places", 0, valPlaceFragment);
+            AddTabToActionBar("View Places", 0, new ViewPlaces());
 
             SetContentView(Resource.Layout.Main);
 
-            mListView = FindViewById<ListView>(Resource.Id.myListView);
-            mPlaces = new List<Place>();
-            mPlaces.Add(new Place() { Time = "Unavailable", Money = "Unavailable", Address = "Unavailable" });
+        }
 
-            ListViewAdapter adapter = new ListViewAdapter(this, mPlaces);
-            mListView.Adapter = adapter;
+        
+        void AddTabToActionBar(string labelResource, int iconResourceId, Fragment view)
+        {
+            var tab = this.ActionBar.NewTab();
+            tab.SetText(labelResource);
+
+            tab.TabSelected += delegate (object sender, ActionBar.TabEventArgs e)
+            {
+                var fragment = this.FragmentManager.FindFragmentById(Resource.Id.fragmentContainer);
+                if (fragment != null)
+                    e.FragmentTransaction.Remove(fragment);
+                e.FragmentTransaction.Add(Resource.Id.fragmentContainer, view);
+            };
+            tab.TabUnselected += delegate (object sender, ActionBar.TabEventArgs e)
+            {
+                e.FragmentTransaction.Remove(view);
+            };
+
+            this.ActionBar.AddTab(tab);
         }
 
         bool IsGooglePlayServicesInstalled()
@@ -164,61 +190,89 @@ namespace Smallet.Droid
                 //span = TimeSpan.FromMinutes(item["time_spent"]);
                 //timeSpent = span.ToString(@"hh\:mm\:ss");
 
-                mPlaces.Add(new Place() {Name = item["name"],Time ="Unknown", Money = "Unknown", Address = item["vicinity"].ToString() });
+                mPlaces.Add(new Place() { Validated = false, Name = item["name"], Time = "?", Money = "?", Address = item["vicinity"].ToString() });
             }
 
+            valPlaceFragment.listPlaces = mPlaces;
             ListViewAdapter adapter = new ListViewAdapter(this, mPlaces);
-            mListView.Adapter = adapter;
+            valPlaceFragment.mListView.Adapter = adapter;
         }
 
-        [Java.Interop.Export("OnClick")]
-        public void OnClick(View v)
+        public void AddValidationForm(View clickedPlace)
         {
-            switch (v.Id)
+            if (popup == null)
             {
-                case Resource.Id.buttonVal:
-                    AlertDialog.Builder alertb = new AlertDialog.Builder(this);
+                this.clickedPlace = clickedPlace;
+                AlertDialog.Builder alertb = new AlertDialog.Builder(this);
 
-                    LayoutInflater inflater = (LayoutInflater)this.GetSystemService(Context.LayoutInflaterService);
-                    popup = inflater.Inflate(Resource.Layout.ValidatePlace, null);
+                LayoutInflater inflater = (LayoutInflater)this.GetSystemService(Context.LayoutInflaterService);
+                popup = inflater.Inflate(Resource.Layout.ValidatePlace, null);
+                alertb.SetView(popup);
 
-                    alertb.SetTitle("Confirm place");
-                    alertb.SetView(popup);
-                    alert = alertb.Create();
+                alertb.SetTitle("Confirm place");
+                alert = alertb.Create();
 
-                    alert.Show();
-                    break;
-                case Resource.Id.buttonRej:
-                    break;
-                case Resource.Id.buttonValConfirm:
-                    var timeText = popup.FindViewById<EditText>(Resource.Id.editTextMoney);
-                    var moneyText = popup.FindViewById<EditText>(Resource.Id.editTextMoney);
-                    if (timeText.Text == null || timeText.Text == "" || moneyText.Text == null || moneyText.Text == "")
-                        Toast.MakeText(this, "Please fill in all fields", ToastLength.Short).Show();
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine("Fazer post com " + timeText.Text + " " + moneyText.Text);
-                        ViewGroup layout = (ViewGroup)v.Parent;
-                        var txtTime = layout.FindViewById<TextView>(Resource.Id.txtTime);
-                        var txtMoney = layout.FindViewById<TextView>(Resource.Id.txtMoneySpent);
+                Button button = popup.FindViewById<Button>(Resource.Id.buttonValConfirm);
+                button.Click += ValConfirm_Click;
+                alert.Show();
+            }
+            else
+                popup = null;
+        }
 
-                        if (txtTime != null && txtMoney != null)
+        private void ValConfirm_Click(object sender, EventArgs e)
+        {
+            EditText timeText;
+            EditText moneyText;
+            try
+            {
+                timeText = popup.FindViewById<EditText>(Resource.Id.editTextTime);
+                moneyText = popup.FindViewById<EditText>(Resource.Id.editTextMoney);
+            }
+            catch (Exception)
+            {
+                timeText = null;
+                moneyText = null;
+            }
+            
+            if (timeText.Text == null || timeText.Text == "" || moneyText.Text == null || moneyText.Text == "")
+                Toast.MakeText(this, "Please fill in all fields", ToastLength.Short).Show();
+            else
+            {
+                // ViewGroup lp1 = (ViewGroup)clickedPlace.Parent;
+               // ViewGroup outView = (ViewGroup)clickedPlace.GetChildAt(0);
+                var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTime);
+                var txtMoney = clickedPlace.FindViewById<TextView>(Resource.Id.txtMoneySpent);
+
+                // outView = (ViewGroup)lp1.GetChildAt(1);
+                var txtName = clickedPlace.FindViewById<TextView>(Resource.Id.txtName);
+                var txtAddress = clickedPlace.FindViewById<TextView>(Resource.Id.txtAddress);
+
+                if (txtTime != null && txtMoney != null)
+                {
+                    txtTime.Text = timeText.Text;
+                    txtMoney.Text = moneyText.Text;
+                }
+
+                txtTime.Invalidate();
+                txtMoney.Invalidate();
+
+                foreach (var place in mPlaces)
+                {
+                    if (!place.Validated)
+                        if (txtAddress.Text == place.Address && txtName.Text == place.Name)
                         {
-                            txtTime.Text = timeText.Text;
-                            txtMoney.Text = moneyText.Text;
+                            place.Time = timeText.Text;
+                            place.Money = moneyText.Text;
+                            place.Validated = true;
+                            Utilities.PostPlace(place);
                         }
-
-
-                        var button = layout.FindViewById<Button>(Resource.Id.buttonRej);
-                        layout.RemoveView(button);
-                        layout.Invalidate();
-                        alert.Hide();
-                    }
-                    break;
-                default:
-                    break;
+                }
+                //lp1.RemoveView(layout);
+                alert.Hide();
             }
         }
+        
 
         protected override void OnResume()
         {
@@ -231,30 +285,7 @@ namespace Smallet.Droid
             locRequest.SetInterval(2000);
 
         }
-
-        private async Task<JsonValue> FetchWeatherAsync(string url)
-        {
-            // Create an HTTP web request using the URL:
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
-            request.ContentType = "application/json";
-            request.Method = "GET";
-
-            // Send the request to the server and wait for the response:
-            using (WebResponse response = await request.GetResponseAsync())
-            {
-                // Get a stream representation of the HTTP web response:
-                using (Stream stream = response.GetResponseStream())
-                {
-                    // Use this stream to build a JSON document object:
-                    JsonValue jsonDoc = await Task.Run(() => JsonObject.Load(stream));
-                    Console.Out.WriteLine("Response: {0}", jsonDoc.ToString());
-
-                    // Return the JSON document:
-                    return jsonDoc;
-                }
-            }
-        }
-
+        
         public async void OnConnected(Bundle connectionHint)
         {
             await LocationServices.FusedLocationApi.RequestLocationUpdates(apiClient, locRequest, this);
@@ -274,7 +305,7 @@ namespace Smallet.Droid
         {
             Log.Info("LocationClient", "Connection failed, attempting to reach google play services");
         }
-        
+
         PendingIntent ActivityDetectionPendingIntent
         {
             get

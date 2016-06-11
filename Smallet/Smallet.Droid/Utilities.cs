@@ -21,7 +21,7 @@ namespace Smallet.Droid
     {
         static string googlePlacesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
         static string googlePlacesKey = "AIzaSyBY3mbMtbMoBVSLPRDAdgxEw0K10PeBEzg";
-
+        static string serverUrl = "https://smartwallet.herokuapp.com/api/";
 
         public static double GetDistance(double lat1, double lon1, double lat2, double lon2)
         {
@@ -43,10 +43,17 @@ namespace Smallet.Droid
             return deg * (Math.PI / 180);
         }
 
+        public static async Task<JsonValue> GetAllPlaces()
+        {
+            string url = serverUrl + "place";
+            JsonValue json = await FetchPlacesAsync(url);
+            return json;
+        }
+
         public static async Task<JsonValue> GetNearbyPlaces(Location loc)
         {
-            googlePlacesUrl += "location=" + loc.Latitude + "," + loc.Longitude + "&radius=" + 50 + "&key=" + googlePlacesKey;
-            JsonValue json = await FetchPlacesAsync(googlePlacesUrl);
+            string url = googlePlacesUrl + "location=" + loc.Latitude + "," + loc.Longitude + "&radius=" + 50 + "&key=" + googlePlacesKey;
+            JsonValue json = await FetchPlacesAsync(url);
             return json;
         }
 
@@ -70,6 +77,51 @@ namespace Smallet.Droid
                     // Return the JSON document:
                     return jsonDoc;
                 }
+            }
+        }
+
+        public static async void PostPlace(Place place)
+        {
+            string data = "{\"name\":\"" + place.Name + "\",\"address\":" + place.Address + ",\"latitude\":" + place.Latitude + ",\"longitude\":" + place.Longitude + ",\"money\":" + place.Money + ",\"iduser\":" + 1 + ",\"spent_time\":" + place.Time + ",\"time\":" + 0 + "}";
+            var postData = new List<KeyValuePair<string, string>>();
+            postData.Add(new KeyValuePair<string, string>("name", place.Name));
+            postData.Add(new KeyValuePair<string, string>("address", place.Address));
+            postData.Add(new KeyValuePair<string, string>("latitude", place.Latitude));
+            postData.Add(new KeyValuePair<string, string>("longitude", place.Longitude));
+            postData.Add(new KeyValuePair<string, string>("money", place.Money));
+            postData.Add(new KeyValuePair<string, string>("iduser", "1"));
+            postData.Add(new KeyValuePair<string, string>("spent_time", place.Time));
+            postData.Add(new KeyValuePair<string, string>("time", "0"));
+
+            string response = await MakePostRequest(data);
+            System.Diagnostics.Debug.WriteLine(response);
+
+        }
+
+        public static async Task<string> MakePostRequest(string data/*, string cookie*/, bool isJson = true)
+        {
+            string url = serverUrl + "place";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.ContentType = "application/json";
+
+            request.Method = "POST";
+            //request.Headers["Cookie"] = cookie;
+            var stream = await request.GetRequestStreamAsync();
+            using (var writer = new StreamWriter(stream))
+            {
+                writer.Write(data);
+                writer.Flush();
+                writer.Dispose();
+            }
+
+            var response = await request.GetResponseAsync();
+            var respStream = response.GetResponseStream();
+
+
+            using (StreamReader sr = new StreamReader(respStream))
+            {
+                //Need to return this response 
+                return sr.ReadToEnd();
             }
         }
     }
