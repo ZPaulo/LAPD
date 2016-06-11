@@ -33,12 +33,12 @@ namespace Smallet.Droid
         static readonly string TAG = "X:" + typeof(MainActivity).Name;
         Location currentLocation, oldLocation;
         bool isCalculating;
+        View popup;
         public static bool isStill;
-        private List<Place> mPlaces;
+        public static List<Place> mPlaces;
         private ListView mListView;
         PendingIntent mActivityDetectionPendingIntent;
-        Button mRequestActivityUpdatesButton;
-        Button mRemoveActivityUpdatesButton;
+        AlertDialog alert;
         private Handler handler;
 
         public void OnLocationChanged(Location location)
@@ -55,11 +55,13 @@ namespace Smallet.Droid
             }
         }
 
-        private void runnableTimed()
+        private async void runnableTimed()
         {
             double distance = Utilities.GetDistance(oldLocation.Latitude, oldLocation.Longitude, currentLocation.Latitude, currentLocation.Longitude);
             if (distance < 15 || isStill)
             {
+                JsonValue json = await Utilities.GetNearbyPlaces(currentLocation);
+                ParseAndDisplay(json);
                 Toast.MakeText(this, "Dentro desta dist " + distance, ToastLength.Long).Show();
             }
             else
@@ -67,7 +69,7 @@ namespace Smallet.Droid
                 oldLocation = currentLocation;
                 Toast.MakeText(this, "Fora desta dist " + distance, ToastLength.Long).Show();
             }
-            isCalculating = false;
+            //isCalculating = false;
         }
 
         public void OnProviderDisabled(string provider)
@@ -91,16 +93,7 @@ namespace Smallet.Droid
             handler = new Handler();
             isCalculating = false;
             isStill = false;
-            SetContentView(Resource.Layout.main_activity);
-
-            mRequestActivityUpdatesButton = FindViewById<Button>(Resource.Id.request_activity_updates_button);
-            mRemoveActivityUpdatesButton = FindViewById<Button>(Resource.Id.remove_activity_updates_button);
-
-            mRequestActivityUpdatesButton.Click += RequestActivityUpdatesButtonHandler;
-            mRemoveActivityUpdatesButton.Click += RemoveActivityUpdatesButtonHandler;
-
-
-            SetButtonsEnabledState();
+            
 
             isGooglePlayServicesInstalled = IsGooglePlayServicesInstalled();
             if (isGooglePlayServicesInstalled)
@@ -130,33 +123,14 @@ namespace Smallet.Droid
             ActionBar.SetCustomView(Resource.Layout.ActionBar);
             ActionBar.SetDisplayShowCustomEnabled(true);
 
-            //SetContentView(Resource.Layout.Main);
+            SetContentView(Resource.Layout.Main);
 
-            //mListView = FindViewById<ListView>(Resource.Id.myListView);
-            //locationText = FindViewById<TextView>(Resource.Id.locationText);
-            //addressText = FindViewById<TextView>(Resource.Id.txtAddress);
-            //mPlaces = new List<Place>();
-            //mPlaces.Add(new Place() { Time = "Unavailable", Money = "Unavailable", Address = "Unavailable" });
+            mListView = FindViewById<ListView>(Resource.Id.myListView);
+            mPlaces = new List<Place>();
+            mPlaces.Add(new Place() { Time = "Unavailable", Money = "Unavailable", Address = "Unavailable" });
 
-            //ListViewAdapter adapter = new ListViewAdapter(this, mPlaces);
-            //mListView.Adapter = adapter;
-
-            //Button button = FindViewById<Button>(Resource.Id.button1);
-
-            //// When the user clicks the button ...
-            //button.Click += async (sender, e) =>
-            //{
-
-            //    // Get the latitude and longitude entered by the user and create a query.
-            //    string url = "http://10.0.2.2:3000/api/locations";
-
-            //    // Fetch the weather information asynchronously, 
-            //    // parse the results, then update the screen:
-            //    JsonValue json = await FetchWeatherAsync(url);
-            //    ParseAndDisplay(json);
-
-
-            //};
+            ListViewAdapter adapter = new ListViewAdapter(this, mPlaces);
+            mListView.Adapter = adapter;
         }
 
         bool IsGooglePlayServicesInstalled()
@@ -180,22 +154,70 @@ namespace Smallet.Droid
 
         private void ParseAndDisplay(JsonValue json)
         {
-            // Extract the array of name/value results for the field name "weatherObservation". 
-            JsonValue location = json["location"];
+            JsonValue places = json["results"];
             mPlaces = new List<Place>();
             TimeSpan span;
             string timeSpent;
 
-            foreach (JsonValue item in location)
+            foreach (JsonValue item in places)
             {
-                span = TimeSpan.FromMinutes(item["time_spent"]);
-                timeSpent = span.ToString(@"hh\:mm\:ss");
+                //span = TimeSpan.FromMinutes(item["time_spent"]);
+                //timeSpent = span.ToString(@"hh\:mm\:ss");
 
-                mPlaces.Add(new Place() { Time = timeSpent, Money = "-" + item["money_spent"].ToString() + "€", Address = item["address"].ToString() });
+                mPlaces.Add(new Place() {Name = item["name"],Time ="Unknown", Money = "Unknown", Address = item["vicinity"].ToString() });
             }
 
             ListViewAdapter adapter = new ListViewAdapter(this, mPlaces);
             mListView.Adapter = adapter;
+        }
+
+        [Java.Interop.Export("OnClick")]
+        public void OnClick(View v)
+        {
+            switch (v.Id)
+            {
+                case Resource.Id.buttonVal:
+                    AlertDialog.Builder alertb = new AlertDialog.Builder(this);
+
+                    LayoutInflater inflater = (LayoutInflater)this.GetSystemService(Context.LayoutInflaterService);
+                    popup = inflater.Inflate(Resource.Layout.ValidatePlace, null);
+
+                    alertb.SetTitle("Confirm place");
+                    alertb.SetView(popup);
+                    alert = alertb.Create();
+
+                    alert.Show();
+                    break;
+                case Resource.Id.buttonRej:
+                    break;
+                case Resource.Id.buttonValConfirm:
+                    var timeText = popup.FindViewById<EditText>(Resource.Id.editTextMoney);
+                    var moneyText = popup.FindViewById<EditText>(Resource.Id.editTextMoney);
+                    if (timeText.Text == null || timeText.Text == "" || moneyText.Text == null || moneyText.Text == "")
+                        Toast.MakeText(this, "Please fill in all fields", ToastLength.Short).Show();
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("Fazer post com " + timeText.Text + " " + moneyText.Text);
+                        ViewGroup layout = (ViewGroup)v.Parent;
+                        var txtTime = layout.FindViewById<TextView>(Resource.Id.txtTime);
+                        var txtMoney = layout.FindViewById<TextView>(Resource.Id.txtMoneySpent);
+
+                        if (txtTime != null && txtMoney != null)
+                        {
+                            txtTime.Text = timeText.Text;
+                            txtMoney.Text = moneyText.Text;
+                        }
+
+
+                        var button = layout.FindViewById<Button>(Resource.Id.buttonRej);
+                        layout.RemoveView(button);
+                        layout.Invalidate();
+                        alert.Hide();
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         protected override void OnResume()
@@ -238,7 +260,7 @@ namespace Smallet.Droid
             await LocationServices.FusedLocationApi.RequestLocationUpdates(apiClient, locRequest, this);
             await Android.Gms.Location.ActivityRecognition.ActivityRecognitionApi.RequestActivityUpdates(
                     apiClient,
-                    10000,
+                    60000,
                     ActivityDetectionPendingIntent
                 );
         }
@@ -252,37 +274,7 @@ namespace Smallet.Droid
         {
             Log.Info("LocationClient", "Connection failed, attempting to reach google play services");
         }
-
-        public async void RequestActivityUpdatesButtonHandler(object sender, EventArgs e)
-        {
-            if (!apiClient.IsConnected)
-            {
-                Toast.MakeText(this, GetString(Resource.String.not_connected),
-                    ToastLength.Short).Show();
-                return;
-            }
-            await Android.Gms.Location.ActivityRecognition.ActivityRecognitionApi.RequestActivityUpdates(
-                    apiClient,
-                    3000,
-                    ActivityDetectionPendingIntent
-                );
-            HandleResult();
-        }
-
-        public async void RemoveActivityUpdatesButtonHandler(object sender, EventArgs e)
-        {
-            if (!apiClient.IsConnected)
-            {
-                Toast.MakeText(this, GetString(Resource.String.not_connected), ToastLength.Short).Show();
-                return;
-            }
-            await Android.Gms.Location.ActivityRecognition.ActivityRecognitionApi.RemoveActivityUpdates(
-                    apiClient,
-                    ActivityDetectionPendingIntent
-                );
-            HandleResult();
-        }
-
+        
         PendingIntent ActivityDetectionPendingIntent
         {
             get
@@ -296,57 +288,6 @@ namespace Smallet.Droid
                 return PendingIntent.GetService(this, 0, intent, PendingIntentFlags.UpdateCurrent);
             }
         }
-
-
-        public void HandleResult()
-        {
-            bool requestingUpdates = !UpdatesRequestedState;
-            UpdatesRequestedState = requestingUpdates;
-
-            SetButtonsEnabledState();
-
-            Toast.MakeText(
-                this,
-                GetString(requestingUpdates ? Resource.String.activity_updates_added : Resource.String.activity_updates_removed),
-                ToastLength.Short
-            ).Show();
-
-        }
-
-        void SetButtonsEnabledState()
-        {
-            if (UpdatesRequestedState)
-            {
-                mRequestActivityUpdatesButton.Enabled = false;
-                mRemoveActivityUpdatesButton.Enabled = true;
-            }
-            else
-            {
-                mRequestActivityUpdatesButton.Enabled = true;
-                mRemoveActivityUpdatesButton.Enabled = false;
-            }
-        }
-
-        ISharedPreferences SharedPreferencesInstance
-        {
-            get
-            {
-                return GetSharedPreferences(Constants.SharedPreferencesName, FileCreationMode.Private);
-            }
-        }
-
-        bool UpdatesRequestedState
-        {
-            get
-            {
-                return SharedPreferencesInstance.GetBoolean(Constants.ActivityUpdatesRequestedKey, false);
-            }
-            set
-            {
-                SharedPreferencesInstance.Edit().PutBoolean(Constants.ActivityUpdatesRequestedKey, value).Commit();
-            }
-        }
-
     }
 }
 

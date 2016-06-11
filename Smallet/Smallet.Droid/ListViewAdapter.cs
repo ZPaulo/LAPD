@@ -16,6 +16,7 @@ namespace Smallet.Droid
 	{
 		public List<Place> mItems;
 		private Context mContext;
+        View row;
 		public ListViewAdapter (Context context, List<Place> items)
 		{
 			mItems = items;
@@ -40,7 +41,7 @@ namespace Smallet.Droid
 
 		public override View GetView(int position, View convertView, ViewGroup parent)
 		{
-			View row = convertView;
+			row = convertView;
 
 			if (row == null) {
 				row = LayoutInflater.From (mContext).Inflate (Resource.Layout.ListViewRow, null, false);
@@ -54,9 +55,11 @@ namespace Smallet.Droid
 			TextView txtAddress = row.FindViewById<TextView> (Resource.Id.txtAddress);
 			txtAddress.Text = mItems [position].Address;
 
-			return row;
+            TextView txtName = row.FindViewById<TextView>(Resource.Id.txtName);
+            txtName.Text = mItems[position].Name;
+            return row;
 		}
-	}
+    }
 
 }
 

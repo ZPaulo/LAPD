@@ -6,4 +6,7 @@
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
   <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
 	<application android:label="Smallet.Droid" android:icon="@drawable/Icon"></application>
+  <meta-data
+     android:name="com.google.android.geo.API_KEY"
+     android:value="AIzaSyDKaXMZo44w_CpW6-u-4aG5RSWC8m_vQQg"/>
 </manifest>

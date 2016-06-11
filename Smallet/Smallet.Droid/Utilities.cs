@@ -9,11 +9,20 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Android.Locations;
+using System.Json;
+using System.Threading.Tasks;
+using System.Net;
+using System.IO;
 
 namespace Smallet.Droid
 {
-   public static class Utilities
+    public static class Utilities
     {
+        static string googlePlacesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
+        static string googlePlacesKey = "AIzaSyBY3mbMtbMoBVSLPRDAdgxEw0K10PeBEzg";
+
+
         public static double GetDistance(double lat1, double lon1, double lat2, double lon2)
         {
             double R = 6371; // Radius of the earth in km
@@ -32,6 +41,36 @@ namespace Smallet.Droid
         static double deg2rad(double deg)
         {
             return deg * (Math.PI / 180);
+        }
+
+        public static async Task<JsonValue> GetNearbyPlaces(Location loc)
+        {
+            googlePlacesUrl += "location=" + loc.Latitude + "," + loc.Longitude + "&radius=" + 50 + "&key=" + googlePlacesKey;
+            JsonValue json = await FetchPlacesAsync(googlePlacesUrl);
+            return json;
+        }
+
+        static private async Task<JsonValue> FetchPlacesAsync(string url)
+        {
+            // Create an HTTP web request using the URL:
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
+            request.ContentType = "application/json";
+            request.Method = "GET";
+
+            // Send the request to the server and wait for the response:
+            using (WebResponse response = await request.GetResponseAsync())
+            {
+                // Get a stream representation of the HTTP web response:
+                using (Stream stream = response.GetResponseStream())
+                {
+                    // Use this stream to build a JSON document object:
+                    JsonValue jsonDoc = await Task.Run(() => JsonObject.Load(stream));
+                    Console.Out.WriteLine("Response: {0}", jsonDoc.ToString());
+
+                    // Return the JSON document:
+                    return jsonDoc;
+                }
+            }
         }
     }
 }

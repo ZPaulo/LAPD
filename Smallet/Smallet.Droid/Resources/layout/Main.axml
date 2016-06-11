@@ -5,16 +5,6 @@
     android:orientation="vertical"
     android:minWidth="25px"
     android:minHeight="25px">
-    <Button
-        android:text="Refresh"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button1" />
-    <TextView
-        android:text="Unable to get location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/locationText" />
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
