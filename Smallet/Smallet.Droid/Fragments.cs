@@ -73,7 +73,7 @@ namespace Smallet.Droid
                 GetResponse json = await Utilities.SearchPlaces(txtSearch.Text);
 
                 if (json.result == null)
-                    Toast.MakeText(Application.Context, json.response, ToastLength.Long).Show();
+                    Toast.MakeText(container.Context, json.response, ToastLength.Long).Show();
                 else
                     ParseAndDisplay(json.result);
             };

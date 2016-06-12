@@ -123,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddListViewAdapter.cs" />
+    <Compile Include="AppActivity.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DetectedActivitiesIntentService.cs" />
     <Compile Include="LoginActivity.cs" />

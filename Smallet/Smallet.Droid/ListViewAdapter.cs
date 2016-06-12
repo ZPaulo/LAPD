@@ -93,7 +93,7 @@ namespace Smallet.Droid
             var but = (View)sender;
             View parent = (View)but.Parent;
             View grandpa = (View)parent.Parent;
-            ((MainActivity)mContext).AddValidationForm(grandpa);
+            ((AppActivity)mContext).AddValidationForm(grandpa);
         }
 
         private void RejBut_Click(object sender, EventArgs e)

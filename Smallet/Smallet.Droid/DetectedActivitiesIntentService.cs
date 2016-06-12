@@ -44,7 +44,7 @@ namespace Smallet.Droid
                             System.Diagnostics.Debug.WriteLine("ActivityRecogition", "Still: " + activity.Confidence);
                             if (activity.Confidence >= 30 && canTrust)
                             {
-                                MainActivity.isStill = true;
+                                AppActivity.isStill = true;
                             }
                             break;
                         }
@@ -52,7 +52,7 @@ namespace Smallet.Droid
                         if (activity.Confidence >= 30)
                         {
                             canTrust = false;
-                            MainActivity.isStill = false;
+                            AppActivity.isStill = false;
                         }
                         break;
                 }

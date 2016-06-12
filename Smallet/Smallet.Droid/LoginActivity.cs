@@ -89,7 +89,8 @@ namespace Smallet.Droid
             Console.WriteLine("Enviando User do the database...");
             Task.WaitAll(PostUser(name, id));
 
-
+            Intent intent = new Intent(this, typeof(AppActivity));
+            StartActivity(intent);
 
         }
 
