@@ -91,7 +91,7 @@ namespace Smallet.Droid
             }
         }
 
-        public static async void PostPlace(Place place)
+        public static async Task<string> PostPlace(Place place)
         {
             string latitude = place.Latitude.Replace(',', '.');
             string longitude = place.Longitude.Replace(',', '.');
@@ -105,11 +105,9 @@ namespace Smallet.Droid
             //postData.Add(new KeyValuePair<string, string>("iduser", "1"));
             //postData.Add(new KeyValuePair<string, string>("spent_time", place.Time));
             //postData.Add(new KeyValuePair<string, string>("time", "0"));
-
-            System.Diagnostics.Debug.WriteLine(data);
+            
             string response = await MakePostRequest(data);
-            System.Diagnostics.Debug.WriteLine("asdasdasd "+response);
-
+            return response;
         }
 
         public static async Task<string> MakePostRequest(string data/*, string cookie*/, bool isJson = true)
@@ -127,6 +125,8 @@ namespace Smallet.Droid
                 writer.Flush();
                 writer.Dispose();
             }
+            try
+            {
                 var response = await request.GetResponseAsync();
                 var respStream = response.GetResponseStream();
                 using (StreamReader sr = new StreamReader(respStream))
@@ -134,6 +134,13 @@ namespace Smallet.Droid
                     //Need to return this response 
                     return sr.ReadToEnd();
                 }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return e.Message;
+            }
+                
         }
     }
 }
