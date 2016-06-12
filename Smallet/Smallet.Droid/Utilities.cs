@@ -153,5 +153,111 @@ namespace Smallet.Droid
             }
                 
         }
+
+        public static async Task<string> EditPlace(Place place)
+        {
+            string latitude = place.Latitude.Replace(',', '.');
+            string longitude = place.Longitude.Replace(',', '.');
+            string data = "{\"id\":\"" + place.Id + ",\"money\":" + place.Money + ",\"spent_time\":\"" + place.TimeSpent + "\"}";
+            //var postData = new List<KeyValuePair<string, string>>();
+            //postData.Add(new KeyValuePair<string, string>("name", place.Name));
+            //postData.Add(new KeyValuePair<string, string>("address", place.Address));
+            //postData.Add(new KeyValuePair<string, string>("latitude", place.Latitude));
+            //postData.Add(new KeyValuePair<string, string>("longitude", place.Longitude));
+            //postData.Add(new KeyValuePair<string, string>("money", place.Money));
+            //postData.Add(new KeyValuePair<string, string>("iduser", "1"));
+            //postData.Add(new KeyValuePair<string, string>("spent_time", place.Time));
+            //postData.Add(new KeyValuePair<string, string>("time", "0"));
+
+            string response = await MakeEditRequest(data);
+            return response;
+        }
+
+        public static async Task<string> MakeEditRequest(string data/*, string cookie*/, bool isJson = true)
+        {
+            System.Diagnostics.Debug.WriteLine(data);
+            string url = serverUrl + "place";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.ContentType = "application/json";
+
+            request.Method = "PUT";
+            //request.Headers["Cookie"] = cookie;
+            var stream = await request.GetRequestStreamAsync();
+            using (var writer = new StreamWriter(stream))
+            {
+                writer.Write(data);
+                System.Diagnostics.Debug.WriteLine(writer);
+                writer.Flush();
+                writer.Dispose();
+            }
+            try
+            {
+                var response = await request.GetResponseAsync();
+                var respStream = response.GetResponseStream();
+                using (StreamReader sr = new StreamReader(respStream))
+                {
+                    //Need to return this response 
+                    return sr.ReadToEnd();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return e.Message;
+            }
+
+        }
+
+        public static async Task<string> RemovePlace(Place place)
+        {
+            string data = "{\"id\":\"" + place.Id + "\"}";
+            //var postData = new List<KeyValuePair<string, string>>();
+            //postData.Add(new KeyValuePair<string, string>("name", place.Name));
+            //postData.Add(new KeyValuePair<string, string>("address", place.Address));
+            //postData.Add(new KeyValuePair<string, string>("latitude", place.Latitude));
+            //postData.Add(new KeyValuePair<string, string>("longitude", place.Longitude));
+            //postData.Add(new KeyValuePair<string, string>("money", place.Money));
+            //postData.Add(new KeyValuePair<string, string>("iduser", "1"));
+            //postData.Add(new KeyValuePair<string, string>("spent_time", place.Time));
+            //postData.Add(new KeyValuePair<string, string>("time", "0"));
+
+            string response = await MakeRemoveRequest(data);
+            return response;
+        }
+
+        public static async Task<string> MakeRemoveRequest(string data/*, string cookie*/, bool isJson = true)
+        {
+            System.Diagnostics.Debug.WriteLine(data);
+            string url = serverUrl + "place";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.ContentType = "application/json";
+
+            request.Method = "Delete";
+            //request.Headers["Cookie"] = cookie;
+            var stream = await request.GetRequestStreamAsync();
+            using (var writer = new StreamWriter(stream))
+            {
+                writer.Write(data);
+                System.Diagnostics.Debug.WriteLine(writer);
+                writer.Flush();
+                writer.Dispose();
+            }
+            try
+            {
+                var response = await request.GetResponseAsync();
+                var respStream = response.GetResponseStream();
+                using (StreamReader sr = new StreamReader(respStream))
+                {
+                    //Need to return this response 
+                    return sr.ReadToEnd();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                return e.Message;
+            }
+
+        }
     }
 }

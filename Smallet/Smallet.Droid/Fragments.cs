@@ -130,9 +130,9 @@ namespace Smallet.Droid
             base.OnCreateView(inflater, container, savedInstanceState);
             this.cont = container;
 
-            var view = inflater.Inflate(Resource.Layout.ValidatePlaceList, container, false);
+            var view = inflater.Inflate(Resource.Layout.EditListViewList, container, false);
 
-            mListView = view.FindViewById<ListView>(Resource.Id.ValListView);
+            mListView = view.FindViewById<ListView>(Resource.Id.EditListView);
 
             GetPlaces();
 
@@ -156,10 +156,10 @@ namespace Smallet.Droid
 
             foreach (JsonValue item in places)
             {
-                listPlaces.Add(new Place() { Validated = true, Name = item["name"], TimeSpent = item["spent_time"], Time = item["time"], Money = item["money"], Address = item["address"].ToString() });
+                listPlaces.Add(new Place() { Validated = true, Name = item["name"], TimeSpent = item["spent_time"], Time = item["time"], Money = item["money"], Address = item["address"].ToString() ,Id = item["id"] });
             }
 
-            ListViewAdapter adapter = new ListViewAdapter(Application.Context, listPlaces);
+            EditListViewAdapter adapter = new EditListViewAdapter(Application.Context, listPlaces);
             mListView.Adapter = adapter;
         }
     }

@@ -71,11 +71,24 @@
             android:layout_height="match_parent"
             android:id="@+id/linearLayout4">
             <Button
-                android:id="@+id/ValidateButton"
+                android:id="@+id/EditButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="OnClick"
-                android:text="Validate"
+                android:text="Edit"
+                android:layout_weight="1" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/linearLayout5">
+            <Button
+                android:id="@+id/RemoveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="OnClick"
+                android:text="Remove"
                 android:layout_weight="1" />
         </LinearLayout>
     </LinearLayout>
