@@ -106,6 +106,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddListViewAdapter.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DetectedActivitiesIntentService.cs" />
     <Compile Include="MainActivity.cs" />
@@ -123,6 +124,12 @@
       <SubType>AndroidResource</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\ValidatePlaceList.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\AddListView.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\AddListViewList.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
   </ItemGroup>

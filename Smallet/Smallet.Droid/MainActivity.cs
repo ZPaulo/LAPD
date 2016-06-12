@@ -152,10 +152,13 @@ namespace Smallet.Droid
 
             mPlaces = new List<Place>();
             mPlaces.Add(new Place() {Time = "?", TimeSpent = "?", Name = "No Places yet", Address = "?", Money = "?" });
+            
 
             valPlaceFragment = new ValidatePlace(mPlaces);
             AddTabToActionBar("Validate Places", 0, valPlaceFragment);
             AddTabToActionBar("View Places", 0, new ViewPlaces());
+            AddTabToActionBar("Add Place", 0, new ManualAdd(mPlaces));
+
 
             SetContentView(Resource.Layout.Main);
 

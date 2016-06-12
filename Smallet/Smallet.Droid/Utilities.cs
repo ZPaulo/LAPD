@@ -20,6 +20,7 @@ namespace Smallet.Droid
     public static class Utilities
     {
         static string googlePlacesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
+        static string googlePacesAuto = "https://maps.googleapis.com/maps/api/place/autocomplete/json?";
         static string googlePlacesKey = "AIzaSyBY3mbMtbMoBVSLPRDAdgxEw0K10PeBEzg";
         static string serverUrl = "https://smartwallet.herokuapp.com/api/";
 
@@ -41,6 +42,14 @@ namespace Smallet.Droid
         static double deg2rad(double deg)
         {
             return deg * (Math.PI / 180);
+        }
+
+        public static async Task<JsonValue> SearchPlaces(string data)
+        {
+            string url = googlePacesAuto + "input=" + data + "&key=" + googlePlacesKey;
+            System.Diagnostics.Debug.WriteLine(url);
+            JsonValue json = await FetchPlacesAsync(url);
+            return json;
         }
 
         public static async Task<JsonValue> GetAllPlaces()
