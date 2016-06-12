@@ -52,7 +52,9 @@ namespace Smallet.Droid
 
         public static async Task<JsonValue> GetNearbyPlaces(Location loc)
         {
-            string url = googlePlacesUrl + "location=" + loc.Latitude + "," + loc.Longitude + "&radius=" + 50 + "&key=" + googlePlacesKey;
+            string latitude = loc.Latitude.ToString().Replace(',','.');
+            string longitude = loc.Longitude.ToString().Replace(',', '.');
+            string url = googlePlacesUrl + "location=" + latitude + "," + longitude + "&radius=" + 50 + "&key=" + googlePlacesKey;
             JsonValue json = await FetchPlacesAsync(url);
             return json;
         }
