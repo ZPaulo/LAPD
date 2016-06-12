@@ -2467,11 +2467,11 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f0900c4
 			public const int ValListView = 2131296452;
 			
-			// aapt resource value: 0x7f090088
-			public const int ValidateButton = 2131296392;
+			// aapt resource value: 0x7f090089
+			public const int ValidateButton = 2131296393;
 			
-			// aapt resource value: 0x7f0900aa
-			public const int action0 = 2131296426;
+			// aapt resource value: 0x7f0900a9
+			public const int action0 = 2131296425;
 			
 			// aapt resource value: 0x7f090070
 			public const int action_bar = 2131296368;
@@ -2497,8 +2497,8 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f090071
 			public const int action_context_bar = 2131296369;
 			
-			// aapt resource value: 0x7f0900ae
-			public const int action_divider = 2131296430;
+			// aapt resource value: 0x7f0900ad
+			public const int action_divider = 2131296429;
 			
 			// aapt resource value: 0x7f090003
 			public const int action_menu_divider = 2131296259;
@@ -2518,8 +2518,8 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f090053
 			public const int activity_chooser_view_content = 2131296339;
 			
-			// aapt resource value: 0x7f09008b
-			public const int addListView = 2131296395;
+			// aapt resource value: 0x7f09008c
+			public const int addListView = 2131296396;
 			
 			// aapt resource value: 0x7f090010
 			public const int adjust_height = 2131296272;
@@ -2554,20 +2554,20 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f09005a
 			public const int buttonPanel = 2131296346;
 			
-			// aapt resource value: 0x7f0900a5
-			public const int buttonRej = 2131296421;
-			
 			// aapt resource value: 0x7f0900a4
-			public const int buttonVal = 2131296420;
+			public const int buttonRej = 2131296420;
+			
+			// aapt resource value: 0x7f0900a3
+			public const int buttonVal = 2131296419;
 			
 			// aapt resource value: 0x7f0900c3
 			public const int buttonValConfirm = 2131296451;
 			
-			// aapt resource value: 0x7f0900ab
-			public const int cancel_action = 2131296427;
+			// aapt resource value: 0x7f0900aa
+			public const int cancel_action = 2131296426;
 			
-			// aapt resource value: 0x7f090091
-			public const int cancel_button = 2131296401;
+			// aapt resource value: 0x7f090092
+			public const int cancel_button = 2131296402;
 			
 			// aapt resource value: 0x7f090036
 			public const int center = 2131296310;
@@ -2581,8 +2581,8 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f090068
 			public const int checkbox = 2131296360;
 			
-			// aapt resource value: 0x7f0900b1
-			public const int chronometer = 2131296433;
+			// aapt resource value: 0x7f0900b0
+			public const int chronometer = 2131296432;
 			
 			// aapt resource value: 0x7f09003e
 			public const int clip_horizontal = 2131296318;
@@ -2593,35 +2593,35 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f09002a
 			public const int collapseActionView = 2131296298;
 			
-			// aapt resource value: 0x7f090093
-			public const int com_facebook_body_frame = 2131296403;
-			
-			// aapt resource value: 0x7f090095
-			public const int com_facebook_button_xout = 2131296405;
-			
-			// aapt resource value: 0x7f09008e
-			public const int com_facebook_device_auth_instructions = 2131296398;
-			
-			// aapt resource value: 0x7f09008d
-			public const int com_facebook_device_dialog_title = 2131296397;
-			
-			// aapt resource value: 0x7f09008c
-			public const int com_facebook_fragment_container = 2131296396;
-			
-			// aapt resource value: 0x7f090092
-			public const int com_facebook_login_activity_progress_bar = 2131296402;
-			
-			// aapt resource value: 0x7f090097
-			public const int com_facebook_tooltip_bubble_view_bottom_pointer = 2131296407;
+			// aapt resource value: 0x7f090094
+			public const int com_facebook_body_frame = 2131296404;
 			
 			// aapt resource value: 0x7f090096
-			public const int com_facebook_tooltip_bubble_view_text_body = 2131296406;
-			
-			// aapt resource value: 0x7f090094
-			public const int com_facebook_tooltip_bubble_view_top_pointer = 2131296404;
+			public const int com_facebook_button_xout = 2131296406;
 			
 			// aapt resource value: 0x7f09008f
-			public const int confirmation_code = 2131296399;
+			public const int com_facebook_device_auth_instructions = 2131296399;
+			
+			// aapt resource value: 0x7f09008e
+			public const int com_facebook_device_dialog_title = 2131296398;
+			
+			// aapt resource value: 0x7f09008d
+			public const int com_facebook_fragment_container = 2131296397;
+			
+			// aapt resource value: 0x7f090093
+			public const int com_facebook_login_activity_progress_bar = 2131296403;
+			
+			// aapt resource value: 0x7f090098
+			public const int com_facebook_tooltip_bubble_view_bottom_pointer = 2131296408;
+			
+			// aapt resource value: 0x7f090097
+			public const int com_facebook_tooltip_bubble_view_text_body = 2131296407;
+			
+			// aapt resource value: 0x7f090095
+			public const int com_facebook_tooltip_bubble_view_top_pointer = 2131296405;
+			
+			// aapt resource value: 0x7f090090
+			public const int confirmation_code = 2131296400;
 			
 			// aapt resource value: 0x7f090060
 			public const int contentPanel = 2131296352;
@@ -2641,20 +2641,20 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f090056
 			public const int default_activity_button = 2131296342;
 			
-			// aapt resource value: 0x7f090099
-			public const int design_bottom_sheet = 2131296409;
+			// aapt resource value: 0x7f09009a
+			public const int design_bottom_sheet = 2131296410;
+			
+			// aapt resource value: 0x7f0900a1
+			public const int design_menu_item_action_area = 2131296417;
 			
 			// aapt resource value: 0x7f0900a0
-			public const int design_menu_item_action_area = 2131296416;
+			public const int design_menu_item_action_area_stub = 2131296416;
 			
 			// aapt resource value: 0x7f09009f
-			public const int design_menu_item_action_area_stub = 2131296415;
+			public const int design_menu_item_text = 2131296415;
 			
 			// aapt resource value: 0x7f09009e
-			public const int design_menu_item_text = 2131296414;
-			
-			// aapt resource value: 0x7f09009d
-			public const int design_navigation_view = 2131296413;
+			public const int design_navigation_view = 2131296414;
 			
 			// aapt resource value: 0x7f09001a
 			public const int disableHome = 2131296282;
@@ -2674,8 +2674,8 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f090027
 			public const int end = 2131296295;
 			
-			// aapt resource value: 0x7f0900b6
-			public const int end_padder = 2131296438;
+			// aapt resource value: 0x7f0900b5
+			public const int end_padder = 2131296437;
 			
 			// aapt resource value: 0x7f09002e
 			public const int enterAlways = 2131296302;
@@ -2704,8 +2704,8 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f090043
 			public const int @fixed = 2131296323;
 			
-			// aapt resource value: 0x7f0900a8
-			public const int fragmentContainer = 2131296424;
+			// aapt resource value: 0x7f0900a7
+			public const int fragmentContainer = 2131296423;
 			
 			// aapt resource value: 0x7f090005
 			public const int home = 2131296261;
@@ -2731,11 +2731,11 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f090080
 			public const int imageView1 = 2131296384;
 			
-			// aapt resource value: 0x7f090089
-			public const int imeisearch = 2131296393;
+			// aapt resource value: 0x7f09008a
+			public const int imeisearch = 2131296394;
 			
-			// aapt resource value: 0x7f0900b5
-			public const int info = 2131296437;
+			// aapt resource value: 0x7f0900b4
+			public const int info = 2131296436;
 			
 			// aapt resource value: 0x7f09004a
 			public const int inline = 2131296330;
@@ -2752,17 +2752,17 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f090017
 			public const int light = 2131296279;
 			
-			// aapt resource value: 0x7f0900af
-			public const int line1 = 2131296431;
+			// aapt resource value: 0x7f0900ae
+			public const int line1 = 2131296430;
 			
-			// aapt resource value: 0x7f0900b3
-			public const int line3 = 2131296435;
+			// aapt resource value: 0x7f0900b2
+			public const int line3 = 2131296434;
 			
 			// aapt resource value: 0x7f09007f
 			public const int linearLayout1 = 2131296383;
 			
-			// aapt resource value: 0x7f0900a1
-			public const int linearLayout12 = 2131296417;
+			// aapt resource value: 0x7f0900a2
+			public const int linearLayout12 = 2131296418;
 			
 			// aapt resource value: 0x7f090081
 			public const int linearLayout2 = 2131296385;
@@ -2770,14 +2770,14 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f090082
 			public const int linearLayout3 = 2131296386;
 			
-			// aapt resource value: 0x7f090087
-			public const int linearLayout4 = 2131296391;
+			// aapt resource value: 0x7f090088
+			public const int linearLayout4 = 2131296392;
 			
 			// aapt resource value: 0x7f0900c1
 			public const int linearLayoutMoney = 2131296449;
 			
-			// aapt resource value: 0x7f0900bf
-			public const int linearLayoutTime = 2131296447;
+			// aapt resource value: 0x7f0900be
+			public const int linearLayoutTime = 2131296446;
 			
 			// aapt resource value: 0x7f090018
 			public const int listMode = 2131296280;
@@ -2785,17 +2785,17 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f090057
 			public const int list_item = 2131296343;
 			
+			// aapt resource value: 0x7f0900a5
+			public const int login_button = 2131296421;
+			
 			// aapt resource value: 0x7f0900a6
-			public const int login_button = 2131296422;
+			public const int mainLayout = 2131296422;
 			
-			// aapt resource value: 0x7f0900a7
-			public const int mainLayout = 2131296423;
+			// aapt resource value: 0x7f0900ac
+			public const int media_actions = 2131296428;
 			
-			// aapt resource value: 0x7f0900ad
-			public const int media_actions = 2131296429;
-			
-			// aapt resource value: 0x7f0900a9
-			public const int messenger_send_button = 2131296425;
+			// aapt resource value: 0x7f0900a8
+			public const int messenger_send_button = 2131296424;
 			
 			// aapt resource value: 0x7f090028
 			public const int middle = 2131296296;
@@ -2806,8 +2806,8 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f090021
 			public const int multiply = 2131296289;
 			
-			// aapt resource value: 0x7f09009c
-			public const int navigation_header_container = 2131296412;
+			// aapt resource value: 0x7f09009d
+			public const int navigation_header_container = 2131296413;
 			
 			// aapt resource value: 0x7f09002c
 			public const int never = 2131296300;
@@ -2836,32 +2836,32 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f090034
 			public const int pin = 2131296308;
 			
-			// aapt resource value: 0x7f0900b9
-			public const int place_autocomplete_clear_button = 2131296441;
-			
-			// aapt resource value: 0x7f0900bb
-			public const int place_autocomplete_powered_by_google = 2131296443;
-			
-			// aapt resource value: 0x7f0900bd
-			public const int place_autocomplete_prediction_primary_text = 2131296445;
-			
-			// aapt resource value: 0x7f0900be
-			public const int place_autocomplete_prediction_secondary_text = 2131296446;
-			
-			// aapt resource value: 0x7f0900bc
-			public const int place_autocomplete_progress = 2131296444;
-			
-			// aapt resource value: 0x7f0900b7
-			public const int place_autocomplete_search_button = 2131296439;
-			
 			// aapt resource value: 0x7f0900b8
-			public const int place_autocomplete_search_input = 2131296440;
+			public const int place_autocomplete_clear_button = 2131296440;
 			
 			// aapt resource value: 0x7f0900ba
-			public const int place_autocomplete_separator = 2131296442;
+			public const int place_autocomplete_powered_by_google = 2131296442;
 			
-			// aapt resource value: 0x7f090090
-			public const int progress_bar = 2131296400;
+			// aapt resource value: 0x7f0900bc
+			public const int place_autocomplete_prediction_primary_text = 2131296444;
+			
+			// aapt resource value: 0x7f0900bd
+			public const int place_autocomplete_prediction_secondary_text = 2131296445;
+			
+			// aapt resource value: 0x7f0900bb
+			public const int place_autocomplete_progress = 2131296443;
+			
+			// aapt resource value: 0x7f0900b6
+			public const int place_autocomplete_search_button = 2131296438;
+			
+			// aapt resource value: 0x7f0900b7
+			public const int place_autocomplete_search_input = 2131296439;
+			
+			// aapt resource value: 0x7f0900b9
+			public const int place_autocomplete_separator = 2131296441;
+			
+			// aapt resource value: 0x7f090091
+			public const int progress_bar = 2131296401;
 			
 			// aapt resource value: 0x7f090006
 			public const int progress_circular = 2131296262;
@@ -2944,11 +2944,11 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f09004f
 			public const int small = 2131296335;
 			
-			// aapt resource value: 0x7f09009b
-			public const int snackbar_action = 2131296411;
+			// aapt resource value: 0x7f09009c
+			public const int snackbar_action = 2131296412;
 			
-			// aapt resource value: 0x7f09009a
-			public const int snackbar_text = 2131296410;
+			// aapt resource value: 0x7f09009b
+			public const int snackbar_text = 2131296411;
 			
 			// aapt resource value: 0x7f090032
 			public const int snap = 2131296306;
@@ -2974,8 +2974,8 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f09003c
 			public const int start = 2131296316;
 			
-			// aapt resource value: 0x7f0900ac
-			public const int status_bar_latest_event_content = 2131296428;
+			// aapt resource value: 0x7f0900ab
+			public const int status_bar_latest_event_content = 2131296427;
 			
 			// aapt resource value: 0x7f09007b
 			public const int submit_area = 2131296379;
@@ -2986,17 +2986,17 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f09000f
 			public const int terrain = 2131296271;
 			
-			// aapt resource value: 0x7f0900b4
-			public const int text = 2131296436;
+			// aapt resource value: 0x7f0900b3
+			public const int text = 2131296435;
 			
-			// aapt resource value: 0x7f0900b2
-			public const int text2 = 2131296434;
+			// aapt resource value: 0x7f0900b1
+			public const int text2 = 2131296433;
 			
 			// aapt resource value: 0x7f090063
 			public const int textSpacerNoButtons = 2131296355;
 			
-			// aapt resource value: 0x7f0900b0
-			public const int time = 2131296432;
+			// aapt resource value: 0x7f0900af
+			public const int time = 2131296431;
 			
 			// aapt resource value: 0x7f090059
 			public const int title = 2131296345;
@@ -3010,29 +3010,29 @@ namespace Smallet.Droid
 			// aapt resource value: 0x7f09005d
 			public const int topPanel = 2131296349;
 			
-			// aapt resource value: 0x7f090098
-			public const int touch_outside = 2131296408;
+			// aapt resource value: 0x7f090099
+			public const int touch_outside = 2131296409;
 			
-			// aapt resource value: 0x7f090086
-			public const int txtAddress = 2131296390;
-			
-			// aapt resource value: 0x7f090084
-			public const int txtMoneySpent = 2131296388;
+			// aapt resource value: 0x7f090087
+			public const int txtAddress = 2131296391;
 			
 			// aapt resource value: 0x7f090085
-			public const int txtName = 2131296389;
+			public const int txtMoneySpent = 2131296389;
 			
-			// aapt resource value: 0x7f09008a
-			public const int txtTextSearch = 2131296394;
+			// aapt resource value: 0x7f090086
+			public const int txtName = 2131296390;
+			
+			// aapt resource value: 0x7f09008b
+			public const int txtTextSearch = 2131296395;
+			
+			// aapt resource value: 0x7f0900bf
+			public const int txtTime = 2131296447;
 			
 			// aapt resource value: 0x7f090083
-			public const int txtTime = 2131296387;
+			public const int txtTimeDate = 2131296387;
 			
-			// aapt resource value: 0x7f0900a2
-			public const int txtTimeDate = 2131296418;
-			
-			// aapt resource value: 0x7f0900a3
-			public const int txtTimeSpent = 2131296419;
+			// aapt resource value: 0x7f090084
+			public const int txtTimeSpent = 2131296388;
 			
 			// aapt resource value: 0x7f090047
 			public const int unknown = 2131296327;
