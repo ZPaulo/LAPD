@@ -24,6 +24,7 @@ namespace Smallet.Droid
         static string googlePlacesKey = "AIzaSyBY3mbMtbMoBVSLPRDAdgxEw0K10PeBEzg";
         static string serverUrl = "https://smartwallet.herokuapp.com/api/";
 
+
         public static double GetDistance(double lat1, double lon1, double lat2, double lon2)
         {
             double R = 6371; // Radius of the earth in km
@@ -44,51 +45,59 @@ namespace Smallet.Droid
             return deg * (Math.PI / 180);
         }
 
-        public static async Task<JsonValue> SearchPlaces(string data)
+        public static async Task<GetResponse> SearchPlaces(string data)
         {
             string url = googlePacesAuto + "input=" + data + "&key=" + googlePlacesKey;
             System.Diagnostics.Debug.WriteLine(url);
-            JsonValue json = await FetchPlacesAsync(url);
+            GetResponse json = await FetchPlacesAsync(url);
             return json;
         }
 
-        public static async Task<JsonValue> GetAllPlaces()
+        public static async Task<GetResponse> GetAllPlaces()
         {
             string url = serverUrl + "place";
-            JsonValue json = await FetchPlacesAsync(url);
+            GetResponse json = await FetchPlacesAsync(url);
             return json;
         }
 
-        public static async Task<JsonValue> GetNearbyPlaces(Location loc)
+        public static async Task<GetResponse> GetNearbyPlaces(Location loc)
         {
             string latitude = loc.Latitude.ToString().Replace(',','.');
             string longitude = loc.Longitude.ToString().Replace(',', '.');
             string url = googlePlacesUrl + "location=" + latitude + "," + longitude + "&radius=" + 50 + "&key=" + googlePlacesKey;
-            JsonValue json = await FetchPlacesAsync(url);
-            return json;
+            GetResponse res = await FetchPlacesAsync(url);
+            return res;
         }
 
-        static private async Task<JsonValue> FetchPlacesAsync(string url)
+        static private async Task<GetResponse> FetchPlacesAsync(string url)
         {
             // Create an HTTP web request using the URL:
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
             request.ContentType = "application/json";
             request.Method = "GET";
-
-            // Send the request to the server and wait for the response:
-            using (WebResponse response = await request.GetResponseAsync())
+            GetResponse res;
+            try
             {
-                // Get a stream representation of the HTTP web response:
-                using (Stream stream = response.GetResponseStream())
+                using (WebResponse response = await request.GetResponseAsync())
                 {
-                    // Use this stream to build a JSON document object:
-                    JsonValue jsonDoc = await Task.Run(() => JsonObject.Load(stream));
-                    Console.Out.WriteLine("Response: {0}", jsonDoc.ToString());
+                    // Get a stream representation of the HTTP web response:
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        // Use this stream to build a JSON document object:
+                        JsonValue jsonDoc = await Task.Run(() => JsonObject.Load(stream));
 
-                    // Return the JSON document:
-                    return jsonDoc;
+                        // Return the JSON document:
+                        res = new GetResponse(jsonDoc, "Success");
+                        return res;
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                res = new GetResponse(null, e.Message);
+                return res;
+            }
+            
         }
 
         public static async Task<string> PostPlace(Place place)

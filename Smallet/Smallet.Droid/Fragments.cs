@@ -70,9 +70,12 @@ namespace Smallet.Droid
 
             txtSearch.TextChanged += async delegate (object sender, Android.Text.TextChangedEventArgs e)
             {
-                JsonValue json = await Utilities.SearchPlaces(txtSearch.Text);
+                GetResponse json = await Utilities.SearchPlaces(txtSearch.Text);
 
-                ParseAndDisplay(json);
+                if (json.result == null)
+                    Toast.MakeText(Application.Context, json.response, ToastLength.Long).Show();
+                else
+                    ParseAndDisplay(json.result);
             };
 
             return view;
@@ -118,10 +121,12 @@ namespace Smallet.Droid
         public ListView mListView;
         List<Place> listPlaces;
         LayoutInflater inflater;
+        ViewGroup cont;
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             base.OnCreateView(inflater, container, savedInstanceState);
+            this.cont = container;
 
             var view = inflater.Inflate(Resource.Layout.ValidatePlaceList, container, false);
 
@@ -134,9 +139,12 @@ namespace Smallet.Droid
 
         private async void GetPlaces()
         {
-            JsonValue json = await Utilities.GetAllPlaces();
+            GetResponse json = await Utilities.GetAllPlaces();
 
-            ParseAndDisplay(json);
+            if(json.result == null)
+                Toast.MakeText(cont.Context, json.response, ToastLength.Long).Show();
+            else
+                ParseAndDisplay(json.result);
         }
 
         private void ParseAndDisplay(JsonValue json)

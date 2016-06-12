@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Json;
 
 namespace Smallet.Droid
 {
@@ -16,5 +17,17 @@ namespace Smallet.Droid
 		{
 		}
 	}
+
+
+    public class GetResponse
+    {
+        public GetResponse(JsonValue result, string response)
+        {
+            this.result = result;
+            this.response = response;
+        }
+        public JsonValue result { get; set; }
+        public string response { get; set; }
+    }
 }
 

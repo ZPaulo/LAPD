@@ -85,9 +85,12 @@ namespace Smallet.Droid
                     Toast.MakeText(this, "Apareci " + distance, ToastLength.Long).Show();
                     elapsedTime = stop.Elapsed;
                     stop.Stop();
-                    JsonValue json = await Utilities.GetNearbyPlaces(oldLocation);
-                    ParseAndDisplay(json, currentLocation, currentTime);
-                    
+                    GetResponse json = await Utilities.GetNearbyPlaces(oldLocation);
+
+                    if (json.result == null)
+                        Toast.MakeText(this, json.response, ToastLength.Long).Show();
+                    else
+                        ParseAndDisplay(json.result, oldLocation, currentTime);
                 }
                 isStillRequest = false;
                 oldLocation = currentLocation;
