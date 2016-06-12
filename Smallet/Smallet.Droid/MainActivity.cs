@@ -85,9 +85,12 @@ namespace Smallet.Droid
                     Toast.MakeText(this, "Apareci " + distance, ToastLength.Long).Show();
                     elapsedTime = stop.Elapsed;
                     stop.Stop();
-                    JsonValue json = await Utilities.GetNearbyPlaces(oldLocation);
-                    ParseAndDisplay(json, currentLocation, currentTime);
-                    
+                    GetResponse json = await Utilities.GetNearbyPlaces(oldLocation);
+
+                    if (json.result == null)
+                        Toast.MakeText(this, json.response, ToastLength.Long).Show();
+                    else
+                        ParseAndDisplay(json.result, oldLocation, currentTime);
                 }
                 isStillRequest = false;
                 oldLocation = currentLocation;
@@ -250,7 +253,7 @@ namespace Smallet.Droid
                 popup = null;
         }
 
-        private void ValConfirm_Click(object sender, EventArgs e)
+        private async void ValConfirm_Click(object sender, EventArgs e)
         {
             EditText timeText;
             EditText moneyText;
@@ -264,13 +267,13 @@ namespace Smallet.Droid
                 timeText = null;
                 moneyText = null;
             }
-            
+
             if (timeText.Text == null || timeText.Text == "" || moneyText.Text == null || moneyText.Text == "")
                 Toast.MakeText(this, "Please fill in all fields", ToastLength.Short).Show();
             else
             {
                 // ViewGroup lp1 = (ViewGroup)clickedPlace.Parent;
-               // ViewGroup outView = (ViewGroup)clickedPlace.GetChildAt(0);
+                // ViewGroup outView = (ViewGroup)clickedPlace.GetChildAt(0);
                 var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTimeSpent);
                 var txtMoney = clickedPlace.FindViewById<TextView>(Resource.Id.txtMoneySpent);
 
@@ -287,6 +290,7 @@ namespace Smallet.Droid
                 txtTime.Invalidate();
                 txtMoney.Invalidate();
 
+                string response = "";
                 foreach (var place in mPlaces)
                 {
                     if (!place.Validated)
@@ -295,14 +299,17 @@ namespace Smallet.Droid
                             place.TimeSpent = timeText.Text;
                             place.Money = moneyText.Text;
                             place.Validated = true;
-                            Utilities.PostPlace(place);
+                            response = await Utilities.PostPlace(place);
+                            break;
                         }
                 }
+                Toast.MakeText(this, response, ToastLength.Long).Show();
+
                 //lp1.RemoveView(layout);
                 alert.Hide();
             }
         }
-        
+
 
         protected override void OnResume()
         {
