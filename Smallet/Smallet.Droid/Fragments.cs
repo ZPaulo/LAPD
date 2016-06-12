@@ -49,6 +49,7 @@ namespace Smallet.Droid
     {
         public ListView mListView;
         List<Place> listPlaces;
+        ViewGroup container;
 
         public ManualAdd(List<Place> listPlaces)
         {
@@ -58,6 +59,7 @@ namespace Smallet.Droid
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             base.OnCreateView(inflater, container, savedInstanceState);
+            this.container = container;
 
             var view = inflater.Inflate(Resource.Layout.AddListViewList, container, false);
 
@@ -102,7 +104,7 @@ namespace Smallet.Droid
                 }
                 listPlaces.Add(new Place()
                 {
-                    Validated = true,
+                    Validated = false,
                     Name = name,
                     TimeSpent = "?",
                     Time = "?",
@@ -111,7 +113,7 @@ namespace Smallet.Droid
                 });
             }
 
-            AddListViewAdapter adapter = new AddListViewAdapter(Application.Context, listPlaces);
+            AddListViewAdapter adapter = new AddListViewAdapter(container.Context, listPlaces);
             mListView.Adapter = adapter;
         }
     }

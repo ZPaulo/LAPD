@@ -121,6 +121,7 @@ namespace Smallet.Droid
 
         public static async Task<string> MakePostRequest(string data/*, string cookie*/, bool isJson = true)
         {
+            System.Diagnostics.Debug.WriteLine(data);
             string url = serverUrl + "place";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.ContentType = "application/json";
@@ -131,6 +132,7 @@ namespace Smallet.Droid
             using (var writer = new StreamWriter(stream))
             {
                 writer.Write(data);
+                System.Diagnostics.Debug.WriteLine(writer);
                 writer.Flush();
                 writer.Dispose();
             }

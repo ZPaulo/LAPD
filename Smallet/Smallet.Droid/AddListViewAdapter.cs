@@ -16,6 +16,7 @@ namespace Smallet.Droid
     {
         public List<Place> mItems;
         private Context mContext;
+
         public AddListViewAdapter(Context context, List<Place> items)
         {
             mItems = items;
@@ -48,8 +49,11 @@ namespace Smallet.Droid
             {
                 row = LayoutInflater.From(mContext).Inflate(Resource.Layout.AddListView, null, false);
             }
-            TextView txtTime = row.FindViewById<TextView>(Resource.Id.txtTime);
-            txtTime.Text = mItems[position].Time;
+            TextView txtTimeDate = row.FindViewById<TextView>(Resource.Id.txtTimeDate);
+            txtTimeDate.Text = mItems[position].Time;
+
+            TextView txtTimeSpent = row.FindViewById<TextView>(Resource.Id.txtTimeSpent);
+            txtTimeSpent.Text = mItems[position].TimeSpent;
 
             TextView txtMoney = row.FindViewById<TextView>(Resource.Id.txtMoneySpent);
             txtMoney.Text = mItems[position].Money;
@@ -59,11 +63,36 @@ namespace Smallet.Droid
 
             TextView txtName = row.FindViewById<TextView>(Resource.Id.txtName);
             txtName.Text = mItems[position].Name;
-
-            /* CheckBox txtValidated = row.FindViewById<CheckBox>(Resource.Id.txtCheckbox);
-             txtValidated.Checked = mItems[position].Validated;*/
+            
             Button Validate = row.FindViewById<Button>(Resource.Id.ValidateButton);
+
+
+            if (Validate != null)
+            {
+                Validate.Click += ValBut_Click;
+            }
+
+            if (mItems[position].Validated)
+            {
+                if (Validate != null )
+                {
+                    Validate.Visibility = ViewStates.Gone;
+
+                    Validate.Click -= ValBut_Click;
+                }
+            }
+            
+
             return row;
+        }
+
+        public void ValBut_Click(object sender, EventArgs e)
+        {
+            var but = (View)sender;
+            View parent = (View)but.Parent;
+            View grandpa = (View)parent.Parent;
+            View greatGrandpa = (View)grandpa.Parent;
+            ((MainActivity)mContext).ManAddValidationForm(greatGrandpa,mItems);
         }
     }
 
