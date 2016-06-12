@@ -78,10 +78,7 @@ namespace Smallet.Droid
 
             foreach (JsonValue item in places)
             {
-                //span = TimeSpan.FromMinutes(item["time_spent"]);
-                //timeSpent = span.ToString(@"hh\:mm\:ss");
-
-                listPlaces.Add(new Place() { Validated = true, Name = item["name"], Time = item["time"], Money = item["money"], Address = item["address"].ToString() });
+                listPlaces.Add(new Place() { Validated = true, Name = item["name"],TimeSpent = item["spent_time"] ,Time = item["time"], Money = item["money"], Address = item["address"].ToString() });
             }
 
             ListViewAdapter adapter = new ListViewAdapter(Application.Context, listPlaces);

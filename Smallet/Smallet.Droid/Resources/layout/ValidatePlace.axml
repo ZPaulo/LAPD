@@ -22,6 +22,7 @@
             android:textStyle="bold"
             android:textColor="#ff000000" />
         <EditText
+            android:inputType="time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/editTextTime"
@@ -34,16 +35,16 @@
         android:id="@+id/linearLayoutMoney">
         <TextView
             android:text="MoneySpent"
-            android:inputType="numberDecimal"
             android:id="@+id/txtMoneySpent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#ffcc3232" />
         <EditText
+            android:inputType="numberDecimal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/editTextMoney"
-            android:hint="Input time spent" />
+            android:hint="Input money spent" />
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"

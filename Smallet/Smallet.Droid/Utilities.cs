@@ -82,19 +82,20 @@ namespace Smallet.Droid
 
         public static async void PostPlace(Place place)
         {
-            string data = "{\"name\":\"" + place.Name + "\",\"address\":" + place.Address + ",\"latitude\":" + place.Latitude + ",\"longitude\":" + place.Longitude + ",\"money\":" + place.Money + ",\"iduser\":" + 1 + ",\"spent_time\":" + place.Time + ",\"time\":" + 0 + "}";
-            var postData = new List<KeyValuePair<string, string>>();
-            postData.Add(new KeyValuePair<string, string>("name", place.Name));
-            postData.Add(new KeyValuePair<string, string>("address", place.Address));
-            postData.Add(new KeyValuePair<string, string>("latitude", place.Latitude));
-            postData.Add(new KeyValuePair<string, string>("longitude", place.Longitude));
-            postData.Add(new KeyValuePair<string, string>("money", place.Money));
-            postData.Add(new KeyValuePair<string, string>("iduser", "1"));
-            postData.Add(new KeyValuePair<string, string>("spent_time", place.Time));
-            postData.Add(new KeyValuePair<string, string>("time", "0"));
+            string data = "{\"name\":\"" + place.Name + "\",\"address\":" + place.Address + ",\"latitude\":" + place.Latitude + ",\"longitude\":" + place.Longitude + ",\"money\":" + place.Money + ",\"iduser\":" + 1 + ",\"spent_time\":\"" + place.TimeSpent + "\",\"time\":\"" + place.Time + "\"}";
+            //var postData = new List<KeyValuePair<string, string>>();
+            //postData.Add(new KeyValuePair<string, string>("name", place.Name));
+            //postData.Add(new KeyValuePair<string, string>("address", place.Address));
+            //postData.Add(new KeyValuePair<string, string>("latitude", place.Latitude));
+            //postData.Add(new KeyValuePair<string, string>("longitude", place.Longitude));
+            //postData.Add(new KeyValuePair<string, string>("money", place.Money));
+            //postData.Add(new KeyValuePair<string, string>("iduser", "1"));
+            //postData.Add(new KeyValuePair<string, string>("spent_time", place.Time));
+            //postData.Add(new KeyValuePair<string, string>("time", "0"));
 
+            System.Diagnostics.Debug.WriteLine(data);
             string response = await MakePostRequest(data);
-            System.Diagnostics.Debug.WriteLine(response);
+            System.Diagnostics.Debug.WriteLine("asdasdasd "+response);
 
         }
 
@@ -113,16 +114,13 @@ namespace Smallet.Droid
                 writer.Flush();
                 writer.Dispose();
             }
-
-            var response = await request.GetResponseAsync();
-            var respStream = response.GetResponseStream();
-
-
-            using (StreamReader sr = new StreamReader(respStream))
-            {
-                //Need to return this response 
-                return sr.ReadToEnd();
-            }
+                var response = await request.GetResponseAsync();
+                var respStream = response.GetResponseStream();
+                using (StreamReader sr = new StreamReader(respStream))
+                {
+                    //Need to return this response 
+                    return sr.ReadToEnd();
+                }
         }
     }
 }

@@ -21,6 +21,7 @@ using Android.Gms.Common;
 using Android.Gms.Location;
 using Android.Support.V4.Content;
 using Java.Util;
+using System.Diagnostics;
 
 namespace Smallet.Droid
 {
@@ -32,7 +33,7 @@ namespace Smallet.Droid
         LocationRequest locRequest;
         static readonly string TAG = "X:" + typeof(MainActivity).Name;
         Location currentLocation, oldLocation;
-        bool isCalculating;
+        bool isCalculating, isStillRequest;
         View popup;
         public static bool isStill;
         public static List<Place> mPlaces;
@@ -42,6 +43,10 @@ namespace Smallet.Droid
         private Handler handler;
         ListViewAdapter adapter;
         View clickedPlace;
+        Stopwatch stop;
+        string currentTime;
+        TimeSpan elapsedTime;
+        int timeIntervalStop;
 
         public void OnLocationChanged(Location location)
         {
@@ -53,24 +58,41 @@ namespace Smallet.Droid
             if (!isCalculating)
             {
                 isCalculating = true;
-                handler.PostDelayed(runnableTimed, 3000);
+                handler.PostDelayed(runnableTimed, timeIntervalStop);
             }
         }
 
         private async void runnableTimed()
         {
             double distance = Utilities.GetDistance(oldLocation.Latitude, oldLocation.Longitude, currentLocation.Latitude, currentLocation.Longitude);
-            if (distance < 15 || isStill)
+            if (distance < 2 /*|| isStill*/)
             {
-                JsonValue json = await Utilities.GetNearbyPlaces(currentLocation);
-                ParseAndDisplay(json);
+                if (!isStillRequest)
+                {
+                    DateTime now = DateTime.Now.ToLocalTime();
+                    stop = new Stopwatch();
+                    stop.Reset();
+                    stop.Start();
+                    currentTime = (string.Format("{0}", now));
+                    isStillRequest = true;
+                }
                 Toast.MakeText(this, "Dentro desta dist " + distance, ToastLength.Long).Show();
             }
             else
             {
+                if (isStillRequest)
+                {
+                    Toast.MakeText(this, "Apareci " + distance, ToastLength.Long).Show();
+                    elapsedTime = stop.Elapsed;
+                    stop.Stop();
+                    JsonValue json = await Utilities.GetNearbyPlaces(oldLocation);
+                    ParseAndDisplay(json, currentLocation, currentTime);
+                    
+                }
+                isStillRequest = false;
                 oldLocation = currentLocation;
             }
-            //isCalculating = false;
+            isCalculating = false;
         }
 
         public void OnProviderDisabled(string provider)
@@ -95,7 +117,8 @@ namespace Smallet.Droid
             handler = new Handler();
             isCalculating = false;
             isStill = false;
-
+            isStillRequest = false;
+            timeIntervalStop = 3000;
 
             isGooglePlayServicesInstalled = IsGooglePlayServicesInstalled();
             if (isGooglePlayServicesInstalled)
@@ -128,7 +151,7 @@ namespace Smallet.Droid
 
 
             mPlaces = new List<Place>();
-            mPlaces.Add(new Place() { Time = "?", Name = "No Places yet", Address = "?", Money = "?" });
+            mPlaces.Add(new Place() {Time = "?", TimeSpent = "?", Name = "No Places yet", Address = "?", Money = "?" });
 
             valPlaceFragment = new ValidatePlace(mPlaces);
             AddTabToActionBar("Validate Places", 0, valPlaceFragment);
@@ -178,19 +201,18 @@ namespace Smallet.Droid
             return false;
         }
 
-        private void ParseAndDisplay(JsonValue json)
+        private void ParseAndDisplay(JsonValue json, Location loc, string currentTime)
         {
             JsonValue places = json["results"];
             mPlaces = new List<Place>();
-            TimeSpan span;
-            string timeSpent;
+            int seconds = timeIntervalStop / 1000;
+            elapsedTime = elapsedTime.Add(new TimeSpan(0, 0, seconds));
+
+            var timeSpent = elapsedTime.ToString(@"hh\:mm\:ss");
 
             foreach (JsonValue item in places)
             {
-                //span = TimeSpan.FromMinutes(item["time_spent"]);
-                //timeSpent = span.ToString(@"hh\:mm\:ss");
-
-                mPlaces.Add(new Place() { Validated = false, Name = item["name"], Time = "?", Money = "?", Address = item["vicinity"].ToString() });
+                mPlaces.Add(new Place() { Time = currentTime, Validated = false, Latitude = loc.Latitude.ToString(), Longitude = loc.Longitude.ToString(), Name = item["name"], TimeSpent = timeSpent, Money = "?", Address = item["vicinity"].ToString() });
             }
 
             valPlaceFragment.listPlaces = mPlaces;
@@ -207,6 +229,11 @@ namespace Smallet.Droid
 
                 LayoutInflater inflater = (LayoutInflater)this.GetSystemService(Context.LayoutInflaterService);
                 popup = inflater.Inflate(Resource.Layout.ValidatePlace, null);
+
+                var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTimeSpent);
+                var timeText = popup.FindViewById<EditText>(Resource.Id.editTextTime);
+                timeText.Text = txtTime.Text;
+
                 alertb.SetView(popup);
 
                 alertb.SetTitle("Confirm place");
@@ -241,7 +268,7 @@ namespace Smallet.Droid
             {
                 // ViewGroup lp1 = (ViewGroup)clickedPlace.Parent;
                // ViewGroup outView = (ViewGroup)clickedPlace.GetChildAt(0);
-                var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTime);
+                var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTimeSpent);
                 var txtMoney = clickedPlace.FindViewById<TextView>(Resource.Id.txtMoneySpent);
 
                 // outView = (ViewGroup)lp1.GetChildAt(1);
@@ -262,7 +289,7 @@ namespace Smallet.Droid
                     if (!place.Validated)
                         if (txtAddress.Text == place.Address && txtName.Text == place.Name)
                         {
-                            place.Time = timeText.Text;
+                            place.TimeSpent = timeText.Text;
                             place.Money = moneyText.Text;
                             place.Validated = true;
                             Utilities.PostPlace(place);
