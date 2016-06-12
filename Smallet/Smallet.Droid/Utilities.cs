@@ -84,7 +84,9 @@ namespace Smallet.Droid
 
         public static async void PostPlace(Place place)
         {
-            string data = "{\"name\":\"" + place.Name + "\",\"address\":" + place.Address + ",\"latitude\":" + place.Latitude + ",\"longitude\":" + place.Longitude + ",\"money\":" + place.Money + ",\"iduser\":" + 1 + ",\"spent_time\":\"" + place.TimeSpent + "\",\"time\":\"" + place.Time + "\"}";
+            string latitude = place.Latitude.Replace(',', '.');
+            string longitude = place.Longitude.Replace(',', '.');
+            string data = "{\"name\":\"" + place.Name + "\",\"address\":" + place.Address + ",\"latitude\":" + latitude + ",\"longitude\":" + longitude + ",\"money\":" + place.Money + ",\"iduser\":" + 1 + ",\"spent_time\":\"" + place.TimeSpent + "\",\"time\":\"" + place.Time + "\"}";
             //var postData = new List<KeyValuePair<string, string>>();
             //postData.Add(new KeyValuePair<string, string>("name", place.Name));
             //postData.Add(new KeyValuePair<string, string>("address", place.Address));
