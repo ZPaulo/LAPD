@@ -36,6 +36,7 @@ namespace Smallet.Droid
             StartActivity(intent);
 
             SetContentView(Resource.Layout.Main);
+
         }
     }
 }

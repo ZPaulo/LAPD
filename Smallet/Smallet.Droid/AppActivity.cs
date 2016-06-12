@@ -41,12 +41,12 @@ namespace Smallet.Droid
         ValidatePlace valPlaceFragment;
         AlertDialog alert;
         private Handler handler;
-        ListViewAdapter adapter;
         View clickedPlace;
         Stopwatch stop;
         string currentTime;
         TimeSpan elapsedTime;
         int timeIntervalStop;
+        List<Place> aePlaces;
 
         public void OnLocationChanged(Location location)
         {
@@ -299,6 +299,95 @@ namespace Smallet.Droid
                         {
                             place.TimeSpent = timeText.Text;
                             place.Money = moneyText.Text;
+                            place.Validated = true;
+                            response = await Utilities.PostPlace(place);
+                            break;
+                        }
+                }
+                Toast.MakeText(this, response, ToastLength.Long).Show();
+
+                //lp1.RemoveView(layout);
+                alert.Hide();
+            }
+        }
+
+        public void ManAddValidationForm(View clickedPlace, List<Place> places)
+        {
+            this.aePlaces = places;
+            if (popup == null)
+            {
+                this.clickedPlace = clickedPlace;
+                AlertDialog.Builder alertb = new AlertDialog.Builder(this);
+
+                LayoutInflater inflater = (LayoutInflater)this.GetSystemService(Context.LayoutInflaterService);
+                popup = inflater.Inflate(Resource.Layout.ValidatePlace, null);
+
+                var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTimeSpent);
+                var timeText = popup.FindViewById<EditText>(Resource.Id.editTextTime);
+                timeText.Text = txtTime.Text;
+
+                alertb.SetView(popup);
+
+                alertb.SetTitle("Confirm place");
+                alert = alertb.Create();
+
+                Button button = popup.FindViewById<Button>(Resource.Id.buttonValConfirm);
+                button.Click += ManValConfirm_Click;
+                alert.Show();
+            }
+            else
+                popup = null;
+        }
+
+        private async void ManValConfirm_Click(object sender, EventArgs e)
+        {
+            EditText timeText;
+            EditText moneyText;
+            try
+            {
+                timeText = popup.FindViewById<EditText>(Resource.Id.editTextTime);
+                moneyText = popup.FindViewById<EditText>(Resource.Id.editTextMoney);
+            }
+            catch (Exception)
+            {
+                timeText = null;
+                moneyText = null;
+            }
+
+            if (timeText.Text == null || timeText.Text == "" || moneyText.Text == null || moneyText.Text == "")
+                Toast.MakeText(this, "Please fill in all fields", ToastLength.Short).Show();
+            else
+            {
+                // ViewGroup lp1 = (ViewGroup)clickedPlace.Parent;
+                // ViewGroup outView = (ViewGroup)clickedPlace.GetChildAt(0);
+                var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTimeSpent);
+                var txtMoney = clickedPlace.FindViewById<TextView>(Resource.Id.txtMoneySpent);
+
+                // outView = (ViewGroup)lp1.GetChildAt(1);
+                var txtName = clickedPlace.FindViewById<TextView>(Resource.Id.txtName);
+                var txtAddress = clickedPlace.FindViewById<TextView>(Resource.Id.txtAddress);
+
+                if (txtTime != null && txtMoney != null)
+                {
+                    txtTime.Text = timeText.Text;
+                    txtMoney.Text = moneyText.Text;
+                }
+
+                txtTime.Invalidate();
+                txtMoney.Invalidate();
+
+                string response = "";
+                foreach (var place in aePlaces)
+                {
+                    if (!place.Validated)
+                        if (txtAddress.Text == place.Address && txtName.Text == place.Name)
+                        {
+                            place.TimeSpent = timeText.Text;
+                            place.Money = moneyText.Text;
+                            place.Longitude = "0.0";
+                            place.Latitude = "0.0";
+                            place.Address = "\"" + place.Address + "\"";
+                            place.Time = "00:00:00";
                             place.Validated = true;
                             response = await Utilities.PostPlace(place);
                             break;
