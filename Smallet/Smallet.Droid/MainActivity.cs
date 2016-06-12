@@ -117,6 +117,10 @@ namespace Smallet.Droid
         {
             base.OnCreate(bundle);
             ActionBar.NavigationMode = ActionBarNavigationMode.Tabs;
+
+            Intent intent = new Intent(this, typeof(LoginActivity));
+            StartActivity(intent);
+
             handler = new Handler();
             isCalculating = false;
             isStill = false;
