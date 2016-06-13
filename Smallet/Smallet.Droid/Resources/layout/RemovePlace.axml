@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:paddingTop="25dp"
+    android:paddingLeft="25dp"
+    android:paddingBottom="25dp"
+    android:weightSum="100">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout3">
+        <Button
+            android:text="Confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonConfirmDelete"
+            android:onClick="OnClick"
+            android:layout_weight="1" />
+    </LinearLayout>
+</LinearLayout>

@@ -13,13 +13,12 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout1">
+        android:layout_height="wrap_content">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/linearLayout12">
+            android:layout_height="match_parent"
+            android:id="@+id/linearLayout1">
             <TextView
                 android:text="TimeDate"
                 android:id="@+id/txtTimeDate"
@@ -37,49 +36,46 @@
             <TextView
                 android:text="MoneySpent"
                 android:id="@+id/txtMoneySpent"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#4b6e43" />
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/linearLayout2">
             <TextView
                 android:text="Name"
                 android:id="@+id/txtName"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#727070"
+                android:textColor="#4d4646"
                 android:paddingLeft="25dp" />
             <TextView
                 android:text="Address"
                 android:id="@+id/txtAddress"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#727070"
+                android:textColor="#4d4646"
                 android:paddingLeft="25dp" />
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="207.0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout3">
-        <Button
-            android:text="Validate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/buttonVal"
-            android:layout_weight="1"
-            android:onClick="OnClick" />
-        <Button
-            android:text="Reject"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/buttonRej"
-            android:layout_weight="1"
-            android:onClick="OnClick" />
+            android:layout_height="match_parent"
+            android:id="@+id/linearLayout4">
+            <Button
+                android:id="@+id/ValidateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="OnClick"
+                android:text="Validate" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
