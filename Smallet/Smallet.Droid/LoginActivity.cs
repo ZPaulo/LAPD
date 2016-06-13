@@ -140,10 +140,8 @@ namespace Smallet.Droid
         public static async Task<string> RequestUserAsync(string name, string id)
         {
 
-            //var accept = "application/json";
             Uri uri = new Uri("https://smartwallet.herokuapp.com/api/users");
-            //var auth = "ApiKey humma-numma-na:letters-and-numbers";
-
+          
             HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(uri);
 
             httpRequest.ContentType = "application/json";

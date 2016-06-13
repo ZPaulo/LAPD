@@ -143,16 +143,6 @@ namespace Smallet.Droid
             string latitude = place.Latitude.Replace(',', '.');
             string longitude = place.Longitude.Replace(',', '.');
             string data = "{\"name\":\"" + place.Name + "\",\"address\":" + place.Address + ",\"latitude\":" + latitude + ",\"longitude\":" + longitude + ",\"money\":" + place.Money + ",\"iduser\":" + AppActivity.userID + ",\"spent_time\":\"" + place.TimeSpent + "\",\"time\":\"" + place.Time + "\"}";
-            //var postData = new List<KeyValuePair<string, string>>();
-            //postData.Add(new KeyValuePair<string, string>("name", place.Name));
-            //postData.Add(new KeyValuePair<string, string>("address", place.Address));
-            //postData.Add(new KeyValuePair<string, string>("latitude", place.Latitude));
-            //postData.Add(new KeyValuePair<string, string>("longitude", place.Longitude));
-            //postData.Add(new KeyValuePair<string, string>("money", place.Money));
-            //postData.Add(new KeyValuePair<string, string>("iduser", "1"));
-            //postData.Add(new KeyValuePair<string, string>("spent_time", place.Time));
-            //postData.Add(new KeyValuePair<string, string>("time", "0"));
-            
             string response = await MakePostRequest(data);
             return response;
         }        
@@ -165,7 +155,6 @@ namespace Smallet.Droid
             request.ContentType = "application/json";
 
             request.Method = "POST";
-            //request.Headers["Cookie"] = cookie;
             var stream = await request.GetRequestStreamAsync();
             using (var writer = new StreamWriter(stream))
             {
@@ -195,16 +184,6 @@ namespace Smallet.Droid
         public static async Task<string> EditPlace(Place place)
         {
             string data = "{\"id\":" + place.Id + ",\"money\":" + place.Money + ",\"spent_time\":\"" + place.TimeSpent + "\"}";
-            //var postData = new List<KeyValuePair<string, string>>();
-            //postData.Add(new KeyValuePair<string, string>("name", place.Name));
-            //postData.Add(new KeyValuePair<string, string>("address", place.Address));
-            //postData.Add(new KeyValuePair<string, string>("latitude", place.Latitude));
-            //postData.Add(new KeyValuePair<string, string>("longitude", place.Longitude));
-            //postData.Add(new KeyValuePair<string, string>("money", place.Money));
-            //postData.Add(new KeyValuePair<string, string>("iduser", "1"));
-            //postData.Add(new KeyValuePair<string, string>("spent_time", place.Time));
-            //postData.Add(new KeyValuePair<string, string>("time", "0"));
-
             string response = await MakeEditRequest(data);
             return response;
         }
@@ -217,7 +196,6 @@ namespace Smallet.Droid
             request.ContentType = "application/json";
 
             request.Method = "PUT";
-            //request.Headers["Cookie"] = cookie;
             var stream = await request.GetRequestStreamAsync();
             using (var writer = new StreamWriter(stream))
             {
@@ -247,16 +225,6 @@ namespace Smallet.Droid
         public static async Task<string> RemovePlace(Place place)
         {
             string data = "{\"id\":" + place.Id + "}";
-            //var postData = new List<KeyValuePair<string, string>>();
-            //postData.Add(new KeyValuePair<string, string>("name", place.Name));
-            //postData.Add(new KeyValuePair<string, string>("address", place.Address));
-            //postData.Add(new KeyValuePair<string, string>("latitude", place.Latitude));
-            //postData.Add(new KeyValuePair<string, string>("longitude", place.Longitude));
-            //postData.Add(new KeyValuePair<string, string>("money", place.Money));
-            //postData.Add(new KeyValuePair<string, string>("iduser", "1"));
-            //postData.Add(new KeyValuePair<string, string>("spent_time", place.Time));
-            //postData.Add(new KeyValuePair<string, string>("time", "0"));
-
             string response = await MakeRemoveRequest(data);
             return response;
         }
@@ -269,7 +237,6 @@ namespace Smallet.Droid
             request.ContentType = "application/json";
 
             request.Method = "Delete";
-            //request.Headers["Cookie"] = cookie;
             var stream = await request.GetRequestStreamAsync();
             using (var writer = new StreamWriter(stream))
             {
