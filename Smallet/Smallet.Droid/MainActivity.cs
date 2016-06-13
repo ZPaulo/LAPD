@@ -26,7 +26,7 @@ using Java.Security;
 
 namespace Smallet.Droid
 {
-    [Activity(Label = "Smallet", MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(Label = "Smallet", Theme = "@android:style/Theme.Holo.Light", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : Activity
     {
         protected override void OnCreate(Bundle bundle)

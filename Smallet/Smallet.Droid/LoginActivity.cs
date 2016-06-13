@@ -45,7 +45,8 @@ namespace Smallet.Droid
                 if (AccessToken.CurrentAccessToken != null)
                 {
                     JsonValue json = await Utilities.GetUser(AccessToken.CurrentAccessToken.Token);
-                    AppActivity.userID = Int32.Parse(json["id"]);
+                    string test = json.ToString();
+                    AppActivity.userID = Int32.Parse(test);
                     System.Diagnostics.Debug.WriteLine(AppActivity.userID);
 
                     Intent intent = new Intent(this, typeof(AppActivity));

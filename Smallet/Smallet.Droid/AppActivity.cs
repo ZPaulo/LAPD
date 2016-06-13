@@ -25,7 +25,7 @@ using System.Diagnostics;
 
 namespace Smallet.Droid
 {
-    [Activity(Label = "SmalletActivity")]
+    [Activity(Label = "SmalletActivity"), Theme = "@android:style/Theme.Holo.Light"]
     public class AppActivity : Activity, GoogleApiClient.IConnectionCallbacks, GoogleApiClient.IOnConnectionFailedListener, Android.Gms.Location.ILocationListener
     {
         bool isGooglePlayServicesInstalled;

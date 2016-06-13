@@ -91,6 +91,7 @@ namespace Smallet.Droid
             }
             catch (Exception e)
             {
+                System.Diagnostics.Debug.WriteLine(e.Message);
                 return null;
             }
 
