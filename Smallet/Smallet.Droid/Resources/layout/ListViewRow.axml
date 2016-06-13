@@ -9,7 +9,7 @@
     android:paddingLeft="25dp"
     android:paddingBottom="25dp"
     android:weightSum="100"
-    android:background="#ffeeefe4">
+    android:background="#E2E2E2">
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"
@@ -26,20 +26,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:textColor="#ff000000" />
+                android:textColor="#727070" />
             <TextView
                 android:text="TimeSpent"
                 android:id="@+id/txtTimeSpent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:textColor="#ff000000" />
+                android:textColor="#727070" />
             <TextView
                 android:text="MoneySpent"
                 android:id="@+id/txtMoneySpent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#ffcc3232" />
+                android:textColor="#4b6e43" />
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
@@ -51,14 +51,14 @@
                 android:id="@+id/txtName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#ff000000"
+                android:textColor="#727070"
                 android:paddingLeft="25dp" />
             <TextView
                 android:text="Address"
                 android:id="@+id/txtAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#ff000000"
+                android:textColor="#727070"
                 android:paddingLeft="25dp" />
         </LinearLayout>
     </LinearLayout>

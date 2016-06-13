@@ -5,11 +5,13 @@
     android:orientation="vertical"
     android:minWidth="25px"
     android:minHeight="25px"
-    android:id="@+id/mainLayout">
+    android:id="@+id/mainLayout"
+    android:background="#E2E2E2">
     <FrameLayout
         android:minWidth="25px"
         android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/fragmentContainer" />
+        android:id="@+id/fragmentContainer"
+        android:background="#a09d9c" />
 </LinearLayout>

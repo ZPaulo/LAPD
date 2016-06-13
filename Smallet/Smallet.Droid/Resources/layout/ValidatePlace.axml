@@ -8,25 +8,27 @@
     android:paddingTop="25dp"
     android:paddingLeft="25dp"
     android:paddingBottom="25dp"
-    android:weightSum="100">
+    android:weightSum="100"
+    android:background="#e2e2e2">
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/linearLayoutTime">
         <TextView
-            android:text="TimeSpent"
+            android:text="Time Spent     "
             android:id="@+id/txtTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textColor="#ff000000" />
+            android:textColor="#4d4646" />
         <EditText
             android:inputType="time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/editTextTime"
-            android:hint="Input time spent" />
+            android:hint="Input time spent"
+            android:textColorHint="#a09d9c" />
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -34,17 +36,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/linearLayoutMoney">
         <TextView
-            android:text="MoneySpent"
+            android:text="Money Spent  "
             android:id="@+id/txtMoneySpent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#ffcc3232" />
+            android:textColor="#4d4646" />
         <EditText
             android:inputType="numberDecimal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/editTextMoney"
-            android:hint="Input money spent" />
+            android:hint="Input money spent"
+            android:textColorHint="#a09d9c" />
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -53,10 +56,9 @@
         android:id="@+id/linearLayout3">
         <Button
             android:text="Confirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/buttonValConfirm"
             android:onClick="OnClick"
-            android:layout_weight="1" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </LinearLayout>
