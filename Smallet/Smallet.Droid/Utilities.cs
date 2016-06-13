@@ -60,6 +60,42 @@ namespace Smallet.Droid
             return json;
         }
 
+        public static async Task<JsonValue> GetUser(string token)
+        {
+            string url = serverUrl + "users/token";
+            JsonValue json = await FetchUserIDAsync(url,token);
+            return json;
+        }
+
+        static private async Task<JsonValue> FetchUserIDAsync(string url, string token)
+        {
+            // Create an HTTP web request using the URL:
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
+            request.ContentType = "application/json";
+            request.Headers["Authorization"] = token;
+            request.Method = "GET";
+            try
+            {
+                using (WebResponse response = await request.GetResponseAsync())
+                {
+                    // Get a stream representation of the HTTP web response:
+                    using (Stream stream = response.GetResponseStream())
+                    {
+                        // Use this stream to build a JSON document object:
+                        JsonValue jsonDoc = await Task.Run(() => JsonObject.Load(stream));
+
+                        // Return the JSON document:
+                        return jsonDoc;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
+        }
+
         public static async Task<GetResponse> GetNearbyPlaces(Location loc)
         {
             string latitude = loc.Latitude.ToString().Replace(',','.');
@@ -74,6 +110,7 @@ namespace Smallet.Droid
             // Create an HTTP web request using the URL:
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(new Uri(url));
             request.ContentType = "application/json";
+            request.Headers["Authorization"] = AppActivity.userID.ToString();
             request.Method = "GET";
             GetResponse res;
             try
@@ -104,7 +141,7 @@ namespace Smallet.Droid
         {
             string latitude = place.Latitude.Replace(',', '.');
             string longitude = place.Longitude.Replace(',', '.');
-            string data = "{\"name\":\"" + place.Name + "\",\"address\":" + place.Address + ",\"latitude\":" + latitude + ",\"longitude\":" + longitude + ",\"money\":" + place.Money + ",\"iduser\":" + 1 + ",\"spent_time\":\"" + place.TimeSpent + "\",\"time\":\"" + place.Time + "\"}";
+            string data = "{\"name\":\"" + place.Name + "\",\"address\":" + place.Address + ",\"latitude\":" + latitude + ",\"longitude\":" + longitude + ",\"money\":" + place.Money + ",\"iduser\":" + AppActivity.userID + ",\"spent_time\":\"" + place.TimeSpent + "\",\"time\":\"" + place.Time + "\"}";
             //var postData = new List<KeyValuePair<string, string>>();
             //postData.Add(new KeyValuePair<string, string>("name", place.Name));
             //postData.Add(new KeyValuePair<string, string>("address", place.Address));
@@ -117,7 +154,7 @@ namespace Smallet.Droid
             
             string response = await MakePostRequest(data);
             return response;
-        }
+        }        
 
         public static async Task<string> MakePostRequest(string data/*, string cookie*/, bool isJson = true)
         {

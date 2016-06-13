@@ -47,6 +47,7 @@ namespace Smallet.Droid
         TimeSpan elapsedTime;
         int timeIntervalStop;
         List<Place> aePlaces;
+        public static int userID;
 
         public void OnLocationChanged(Location location)
         {
@@ -117,7 +118,7 @@ namespace Smallet.Droid
         {
             base.OnCreate(bundle);
             ActionBar.NavigationMode = ActionBarNavigationMode.Tabs;
-            
+
             handler = new Handler();
             isCalculating = false;
             isStill = false;
@@ -314,29 +315,24 @@ namespace Smallet.Droid
         public void ManAddValidationForm(View clickedPlace, List<Place> places)
         {
             this.aePlaces = places;
-            if (popup == null)
-            {
-                this.clickedPlace = clickedPlace;
-                AlertDialog.Builder alertb = new AlertDialog.Builder(this);
+            this.clickedPlace = clickedPlace;
+            AlertDialog.Builder alertb = new AlertDialog.Builder(this);
 
-                LayoutInflater inflater = (LayoutInflater)this.GetSystemService(Context.LayoutInflaterService);
-                popup = inflater.Inflate(Resource.Layout.ValidatePlace, null);
+            LayoutInflater inflater = (LayoutInflater)this.GetSystemService(Context.LayoutInflaterService);
+            popup = inflater.Inflate(Resource.Layout.ValidatePlace, null);
 
-                var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTimeSpent);
-                var timeText = popup.FindViewById<EditText>(Resource.Id.editTextTime);
-                timeText.Text = txtTime.Text;
+            var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTimeSpent);
+            var timeText = popup.FindViewById<EditText>(Resource.Id.editTextTime);
+            timeText.Text = txtTime.Text;
 
-                alertb.SetView(popup);
+            alertb.SetView(popup);
 
-                alertb.SetTitle("Confirm place");
-                alert = alertb.Create();
+            alertb.SetTitle("Confirm place");
+            alert = alertb.Create();
 
-                Button button = popup.FindViewById<Button>(Resource.Id.buttonValConfirm);
-                button.Click += ManValConfirm_Click;
-                alert.Show();
-            }
-            else
-                popup = null;
+            Button button = popup.FindViewById<Button>(Resource.Id.buttonValConfirm);
+            button.Click += ManValConfirm_Click;
+            alert.Show();
         }
 
         private async void ManValConfirm_Click(object sender, EventArgs e)

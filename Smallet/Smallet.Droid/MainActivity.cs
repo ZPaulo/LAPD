@@ -22,6 +22,7 @@ using Android.Gms.Location;
 using Android.Support.V4.Content;
 using Java.Util;
 using System.Diagnostics;
+using Java.Security;
 
 namespace Smallet.Droid
 {
@@ -32,7 +33,7 @@ namespace Smallet.Droid
         {
             base.OnCreate(bundle);
 
-            Intent intent = new Intent(this, typeof(AppActivity));
+            Intent intent = new Intent(this, typeof(LoginActivity));
             StartActivity(intent);
 
             SetContentView(Resource.Layout.Main);
