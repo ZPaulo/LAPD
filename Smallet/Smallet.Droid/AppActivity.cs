@@ -47,6 +47,8 @@ namespace Smallet.Droid
         TimeSpan elapsedTime;
         int timeIntervalStop;
         List<Place> aePlaces;
+        List<Place> viewPlaces;
+
         public static int userID;
 
         public void OnLocationChanged(Location location)
@@ -77,13 +79,11 @@ namespace Smallet.Droid
                     currentTime = (string.Format("{0}", now));
                     isStillRequest = true;
                 }
-                Toast.MakeText(this, "Dentro desta dist " + distance, ToastLength.Long).Show();
             }
             else
             {
                 if (isStillRequest)
                 {
-                    Toast.MakeText(this, "Apareci " + distance, ToastLength.Long).Show();
                     elapsedTime = stop.Elapsed;
                     stop.Stop();
                     GetResponse json = await Utilities.GetNearbyPlaces(oldLocation);
@@ -396,31 +396,29 @@ namespace Smallet.Droid
             }
         }
 
-        public void EditValidationForm(View clickedPlace)
+        public void EditValidationForm(View clickedPlace, List<Place> viewPlaces)
         {
-            if (popup == null)
-            {
-                this.clickedPlace = clickedPlace;
-                AlertDialog.Builder alertb = new AlertDialog.Builder(this);
+            this.viewPlaces = viewPlaces;
+            this.clickedPlace = clickedPlace;
+            AlertDialog.Builder alertb = new AlertDialog.Builder(this);
 
-                LayoutInflater inflater = (LayoutInflater)this.GetSystemService(Context.LayoutInflaterService);
-                popup = inflater.Inflate(Resource.Layout.ValidatePlace, null);
+            LayoutInflater inflater = (LayoutInflater)this.GetSystemService(Context.LayoutInflaterService);
+            popup = inflater.Inflate(Resource.Layout.ValidatePlace, null);
 
-                var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTimeSpent);
-                var timeText = popup.FindViewById<EditText>(Resource.Id.editTextTime);
-                timeText.Text = txtTime.Text;
+            var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTimeSpent);
+            var txtMoney = clickedPlace.FindViewById<TextView>(Resource.Id.txtMoneySpent);
+            var timeText = popup.FindViewById<EditText>(Resource.Id.editTextTime);
+            var moneyText = popup.FindViewById<EditText>(Resource.Id.editTextMoney);
+            timeText.Text = txtTime.Text;
+            moneyText.Text = txtMoney.Text;
+            alertb.SetView(popup);
 
-                alertb.SetView(popup);
+            alertb.SetTitle("Confirm place");
+            alert = alertb.Create();
 
-                alertb.SetTitle("Confirm place");
-                alert = alertb.Create();
-
-                Button button = popup.FindViewById<Button>(Resource.Id.buttonValConfirm);
-                button.Click += EditConfirm_Click;
-                alert.Show();
-            }
-            else
-                popup = null;
+            Button button = popup.FindViewById<Button>(Resource.Id.buttonValConfirm);
+            button.Click += EditConfirm_Click;
+            alert.Show();
         }
 
         private async void EditConfirm_Click(object sender, EventArgs e)
@@ -461,17 +459,16 @@ namespace Smallet.Droid
                 txtMoney.Invalidate();
 
                 string response = "";
-                foreach (var place in mPlaces)
+                foreach (var place in viewPlaces)
                 {
-                    if (!place.Validated)
-                        if (txtAddress.Text == place.Address && txtName.Text == place.Name)
-                        {
-                            place.TimeSpent = timeText.Text;
-                            place.Money = moneyText.Text;
-                            place.Validated = true;
-                            response = await Utilities.PostPlace(place);
-                            break;
-                        }
+                    if (txtAddress.Text == place.Address && txtName.Text == place.Name)
+                    {
+                        place.TimeSpent = timeText.Text;
+                        place.Money = moneyText.Text;
+                        place.Validated = true;
+                        response = await Utilities.EditPlace(place);
+                        break;
+                    }
                 }
                 Toast.MakeText(this, response, ToastLength.Long).Show();
 
@@ -480,53 +477,57 @@ namespace Smallet.Droid
             }
         }
 
-        public void RemoveValidationForm(View clickedPlace)
+        public void RemoveValidationForm(View clickedPlace, List<Place> viewPlaces)
         {
-            if (popup == null)
-            {
-                this.clickedPlace = clickedPlace;
-                AlertDialog.Builder alertb = new AlertDialog.Builder(this);
+            this.viewPlaces = viewPlaces;
 
-                LayoutInflater inflater = (LayoutInflater)this.GetSystemService(Context.LayoutInflaterService);
-                popup = inflater.Inflate(Resource.Layout.ValidatePlace, null);
+            this.clickedPlace = clickedPlace;
+            AlertDialog.Builder alertb = new AlertDialog.Builder(this);
 
-               
-                alertb.SetView(popup);
+            LayoutInflater inflater = (LayoutInflater)this.GetSystemService(Context.LayoutInflaterService);
+            popup = inflater.Inflate(Resource.Layout.RemovePlace, null);
 
-                alertb.SetTitle("Are you sure?");
-                alert = alertb.Create();
 
-                Button button = popup.FindViewById<Button>(Resource.Id.buttonValConfirm);
-                button.Click += RemoveConfirm_Click;
-                alert.Show();
-            }
-            else
-                popup = null;
+            alertb.SetView(popup);
+
+            alertb.SetTitle("Are you sure?");
+            alert = alertb.Create();
+
+            Button button = popup.FindViewById<Button>(Resource.Id.buttonConfirmDelete);
+            button.Click += RemoveConfirm_Click;
+            alert.Show();
+
         }
 
         private async void RemoveConfirm_Click(object sender, EventArgs e)
         {
-                var txtName = clickedPlace.FindViewById<TextView>(Resource.Id.txtName);
-                var txtAddress = clickedPlace.FindViewById<TextView>(Resource.Id.txtAddress);
-                
-                
+            var txtName = clickedPlace.FindViewById<TextView>(Resource.Id.txtName);
+            var txtAddress = clickedPlace.FindViewById<TextView>(Resource.Id.txtAddress);
 
-                string response = "";
-                foreach (var place in mPlaces)
+
+
+            string response = "";
+            Place realPlace = null;
+            foreach (var place in viewPlaces)
+            {
+                if (txtAddress.Text == place.Address && txtName.Text == place.Name)
                 {
-                    if (!place.Validated)
-                        if (txtAddress.Text == place.Address && txtName.Text == place.Name)
-                        {
-                            place.Validated = false;
-                            response = await Utilities.RemovePlace(place);
-                            break;
-                        }
+                    response = await Utilities.RemovePlace(place);
+                    realPlace = place;
+                    break;
                 }
-                Toast.MakeText(this, response, ToastLength.Long).Show();
+            }
+            if (realPlace != null)
+                viewPlaces.Remove(realPlace);
 
-                //lp1.RemoveView(layout);
-                alert.Hide();
-            
+            //ViewGroup parent = (ViewGroup)clickedPlace.Parent;
+            //parent.RemoveView(clickedPlace);
+
+            Toast.MakeText(this, response, ToastLength.Long).Show();
+
+            //lp1.RemoveView(layout);
+            alert.Hide();
+
         }
 
         protected override void OnResume()
@@ -549,6 +550,8 @@ namespace Smallet.Droid
                     60000,
                     ActivityDetectionPendingIntent
                 );
+
+            Toast.MakeText(this, "Connected", ToastLength.Long).Show();
         }
 
         public void OnConnectionSuspended(int cause)

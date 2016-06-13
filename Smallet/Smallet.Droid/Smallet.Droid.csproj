@@ -149,6 +149,7 @@
     <AndroidResource Include="Resources\layout\AddListView.axml" />
     <AndroidResource Include="Resources\layout\AddListViewList.axml" />
     <AndroidResource Include="Resources\layout\EditListView.axml" />
+    <AndroidResource Include="Resources\layout\RemovePlace.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\strings.xml" />
