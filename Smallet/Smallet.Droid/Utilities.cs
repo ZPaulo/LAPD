@@ -194,9 +194,7 @@ namespace Smallet.Droid
 
         public static async Task<string> EditPlace(Place place)
         {
-            string latitude = place.Latitude.Replace(',', '.');
-            string longitude = place.Longitude.Replace(',', '.');
-            string data = "{\"id\":\"" + place.Id + ",\"money\":" + place.Money + ",\"spent_time\":\"" + place.TimeSpent + "\"}";
+            string data = "{\"id\":" + place.Id + ",\"money\":" + place.Money + ",\"spent_time\":\"" + place.TimeSpent + "\"}";
             //var postData = new List<KeyValuePair<string, string>>();
             //postData.Add(new KeyValuePair<string, string>("name", place.Name));
             //postData.Add(new KeyValuePair<string, string>("address", place.Address));
@@ -248,7 +246,7 @@ namespace Smallet.Droid
 
         public static async Task<string> RemovePlace(Place place)
         {
-            string data = "{\"id\":\"" + place.Id + "\"}";
+            string data = "{\"id\":" + place.Id + "}";
             //var postData = new List<KeyValuePair<string, string>>();
             //postData.Add(new KeyValuePair<string, string>("name", place.Name));
             //postData.Add(new KeyValuePair<string, string>("address", place.Address));

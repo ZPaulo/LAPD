@@ -159,7 +159,7 @@ namespace Smallet.Droid
                 listPlaces.Add(new Place() { Validated = true, Name = item["name"], TimeSpent = item["spent_time"], Time = item["time"], Money = item["money"], Address = item["address"].ToString() ,Id = item["id"] });
             }
 
-            EditListViewAdapter adapter = new EditListViewAdapter(Application.Context, listPlaces);
+            EditListViewAdapter adapter = new EditListViewAdapter(cont.Context, listPlaces);
             mListView.Adapter = adapter;
         }
     }

@@ -84,8 +84,8 @@ namespace Smallet.Droid
             var but = (View)sender;
             View parent = (View)but.Parent;
             View grandpa = (View)parent.Parent;
-            View greatGrandpa = (View)grandpa.Parent;
-            ((AppActivity)mContext).EditValidationForm(greatGrandpa);
+           
+            ((AppActivity)mContext).EditValidationForm(grandpa,mItems);
         }
 
         public void RemoveBut_Click(object sender, EventArgs e)
@@ -93,8 +93,7 @@ namespace Smallet.Droid
             var but = (View)sender;
             View parent = (View)but.Parent;
             View grandpa = (View)parent.Parent;
-            View greatGrandpa = (View)grandpa.Parent;
-            ((AppActivity)mContext).RemoveValidationForm(greatGrandpa);
+            ((AppActivity)mContext).RemoveValidationForm(grandpa,mItems);
         }
     }
 
