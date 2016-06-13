@@ -118,7 +118,6 @@ namespace Smallet.Droid
 
         public async Task PostUser(string name, string id)
         {
-            // There are 2 ways to use await.  Here is the short way.
             string json = await RequestUserAsync(name, id);
             Console.WriteLine(json);
 
@@ -140,10 +139,8 @@ namespace Smallet.Droid
         public static async Task<string> RequestUserAsync(string name, string id)
         {
 
-            //var accept = "application/json";
             Uri uri = new Uri("https://smartwallet.herokuapp.com/api/users");
-            //var auth = "ApiKey humma-numma-na:letters-and-numbers";
-
+           
             HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(uri);
 
             httpRequest.ContentType = "application/json";

@@ -68,7 +68,7 @@ namespace Smallet.Droid
         private async void runnableTimed()
         {
             double distance = Utilities.GetDistance(oldLocation.Latitude, oldLocation.Longitude, currentLocation.Latitude, currentLocation.Longitude);
-            if (distance < 2 /*|| isStill*/)
+            if (distance < 2 )
             {
                 if (!isStillRequest)
                 {
@@ -274,12 +274,9 @@ namespace Smallet.Droid
                 Toast.MakeText(this, "Please fill in all fields", ToastLength.Short).Show();
             else
             {
-                // ViewGroup lp1 = (ViewGroup)clickedPlace.Parent;
-                // ViewGroup outView = (ViewGroup)clickedPlace.GetChildAt(0);
                 var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTimeSpent);
                 var txtMoney = clickedPlace.FindViewById<TextView>(Resource.Id.txtMoneySpent);
 
-                // outView = (ViewGroup)lp1.GetChildAt(1);
                 var txtName = clickedPlace.FindViewById<TextView>(Resource.Id.txtName);
                 var txtAddress = clickedPlace.FindViewById<TextView>(Resource.Id.txtAddress);
 
@@ -307,7 +304,6 @@ namespace Smallet.Droid
                 }
                 Toast.MakeText(this, response, ToastLength.Long).Show();
 
-                //lp1.RemoveView(layout);
                 alert.Hide();
             }
         }
@@ -354,12 +350,9 @@ namespace Smallet.Droid
                 Toast.MakeText(this, "Please fill in all fields", ToastLength.Short).Show();
             else
             {
-                // ViewGroup lp1 = (ViewGroup)clickedPlace.Parent;
-                // ViewGroup outView = (ViewGroup)clickedPlace.GetChildAt(0);
                 var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTimeSpent);
                 var txtMoney = clickedPlace.FindViewById<TextView>(Resource.Id.txtMoneySpent);
 
-                // outView = (ViewGroup)lp1.GetChildAt(1);
                 var txtName = clickedPlace.FindViewById<TextView>(Resource.Id.txtName);
                 var txtAddress = clickedPlace.FindViewById<TextView>(Resource.Id.txtAddress);
 
@@ -391,7 +384,6 @@ namespace Smallet.Droid
                 }
                 Toast.MakeText(this, response, ToastLength.Long).Show();
 
-                //lp1.RemoveView(layout);
                 alert.Hide();
             }
         }
@@ -440,12 +432,9 @@ namespace Smallet.Droid
                 Toast.MakeText(this, "Please fill in all fields", ToastLength.Short).Show();
             else
             {
-                // ViewGroup lp1 = (ViewGroup)clickedPlace.Parent;
-                // ViewGroup outView = (ViewGroup)clickedPlace.GetChildAt(0);
                 var txtTime = clickedPlace.FindViewById<TextView>(Resource.Id.txtTimeSpent);
                 var txtMoney = clickedPlace.FindViewById<TextView>(Resource.Id.txtMoneySpent);
 
-                // outView = (ViewGroup)lp1.GetChildAt(1);
                 var txtName = clickedPlace.FindViewById<TextView>(Resource.Id.txtName);
                 var txtAddress = clickedPlace.FindViewById<TextView>(Resource.Id.txtAddress);
 
@@ -472,7 +461,6 @@ namespace Smallet.Droid
                 }
                 Toast.MakeText(this, response, ToastLength.Long).Show();
 
-                //lp1.RemoveView(layout);
                 alert.Hide();
             }
         }
@@ -520,12 +508,9 @@ namespace Smallet.Droid
             if (realPlace != null)
                 viewPlaces.Remove(realPlace);
 
-            //ViewGroup parent = (ViewGroup)clickedPlace.Parent;
-            //parent.RemoveView(clickedPlace);
-
+           
             Toast.MakeText(this, response, ToastLength.Long).Show();
 
-            //lp1.RemoveView(layout);
             alert.Hide();
 
         }

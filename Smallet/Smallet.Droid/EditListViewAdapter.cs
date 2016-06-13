@@ -71,11 +71,6 @@ namespace Smallet.Droid
             Edit.Click += EditBut_Click;
             Remove.Click += RemoveBut_Click;
 
-
-
-
-
-
             return row;
         }
 
